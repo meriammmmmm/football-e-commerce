@@ -20,7 +20,7 @@ export default function StreetStyleGallery({ onShopNow }: StreetStyleGalleryProp
   const [activeLook, setActiveLook] = useState(0);
 
   return (
-    <section className="bg-[#f6f1e8] py-16 text-[#172033] sm:py-24" aria-labelledby="street-style-heading">
+    <section className="bg-[#f6f1e8] py-12 text-[#172033] sm:py-16" aria-labelledby="street-style-heading">
       <div className="mx-auto max-w-[1648px] px-4 sm:px-6 lg:px-8">
         <div className="mb-9 flex flex-col justify-between gap-4 sm:mb-12 sm:flex-row sm:items-end">
           <div>
@@ -30,7 +30,7 @@ export default function StreetStyleGallery({ onShopNow }: StreetStyleGalleryProp
           <p className="max-w-sm text-sm leading-6 text-slate-600">Hover over a fit to see the full look, the shirt behind it, and where to find it.</p>
         </div>
 
-        <div className="scrollbar-hide flex h-[560px] snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:h-[590px] sm:snap-none sm:gap-2 sm:overflow-hidden sm:pb-0 lg:h-[800px]">
+        <div className="scrollbar-hide flex h-[420px] snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:h-[480px] sm:snap-none sm:gap-2 sm:overflow-hidden sm:pb-0 lg:h-[580px]">
           {looks.map((look, index) => {
             const isActive = activeLook === index;
 
