@@ -1,8 +1,18 @@
 import { sql } from '@vercel/postgres';
+import { createPool } from '@vercel/postgres';
 
 // Check if database is configured
 function isDatabaseConfigured() {
   return !!(process.env.POSTGRES_URL || process.env.STORAGE_URL);
+}
+
+// Get database connection
+function getDb() {
+  const connectionString = process.env.POSTGRES_URL || process.env.STORAGE_URL;
+  if (!connectionString) {
+    throw new Error('No database connection string found');
+  }
+  return createPool({ connectionString });
 }
 
 // Initialize database tables
@@ -13,8 +23,9 @@ export async function initDB() {
   }
   
   try {
+    const db = getDb();
     // Create users table
-    await sql`
+    await db.sql`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         full_name TEXT NOT NULL,
@@ -27,7 +38,7 @@ export async function initDB() {
     `;
 
     // Create orders table
-    await sql`
+    await db.sql`
       CREATE TABLE IF NOT EXISTS orders (
         id TEXT PRIMARY KEY,
         email TEXT NOT NULL,
@@ -39,7 +50,7 @@ export async function initDB() {
     `;
 
     // Create reviews table
-    await sql`
+    await db.sql`
       CREATE TABLE IF NOT EXISTS reviews (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -58,8 +69,9 @@ export async function initDB() {
 
 // User operations
 export async function createUser(fullName: string, phone: string, address: string, email: string, passwordHash: string) {
+  const db = getDb();
   const id = `usr_${crypto.randomUUID().slice(0, 8)}`;
-  await sql`
+  await db.sql`
     INSERT INTO users (id, full_name, phone, address, email, password_hash)
     VALUES (${id}, ${fullName}, ${phone}, ${address}, ${email}, ${passwordHash})
   `;
@@ -67,14 +79,16 @@ export async function createUser(fullName: string, phone: string, address: strin
 }
 
 export async function getUserByEmail(email: string) {
-  const result = await sql`SELECT * FROM users WHERE email = ${email} LIMIT 1`;
+  const db = getDb();
+  const result = await db.sql`SELECT * FROM users WHERE email = ${email} LIMIT 1`;
   return result.rows[0] || null;
 }
 
 // Order operations
 export async function createOrder(email: string, items: any[], total: number) {
+  const db = getDb();
   const id = `HB-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-  await sql`
+  await db.sql`
     INSERT INTO orders (id, email, items, total)
     VALUES (${id}, ${email}, ${JSON.stringify(items)}, ${total})
   `;
@@ -82,7 +96,8 @@ export async function createOrder(email: string, items: any[], total: number) {
 }
 
 export async function getOrdersByEmail(email: string) {
-  const result = await sql`
+  const db = getDb();
+  const result = await db.sql`
     SELECT id, email, items, total, status, created_at
     FROM orders 
     WHERE email = ${email}
@@ -100,8 +115,9 @@ export async function getOrdersByEmail(email: string) {
 
 // Review operations
 export async function createReview(name: string, rating: number, copy: string) {
+  const db = getDb();
   const id = `review_${crypto.randomUUID().slice(0, 8)}`;
-  await sql`
+  await db.sql`
     INSERT INTO reviews (id, name, rating, copy)
     VALUES (${id}, ${name}, ${rating}, ${copy})
   `;
@@ -109,6 +125,7 @@ export async function createReview(name: string, rating: number, copy: string) {
 }
 
 export async function getAllReviews() {
-  const result = await sql`SELECT * FROM reviews ORDER BY created_at DESC`;
+  const db = getDb();
+  const result = await db.sql`SELECT * FROM reviews ORDER BY created_at DESC`;
   return result.rows;
 }
