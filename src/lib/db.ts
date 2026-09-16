@@ -1,7 +1,17 @@
 import { sql } from '@vercel/postgres';
 
+// Check if database is configured
+function isDatabaseConfigured() {
+  return !!(process.env.POSTGRES_URL || process.env.STORAGE_URL);
+}
+
 // Initialize database tables
 export async function initDB() {
+  if (!isDatabaseConfigured()) {
+    console.log('⚠️ Database not configured, using in-memory storage');
+    return;
+  }
+  
   try {
     // Create users table
     await sql`
@@ -42,6 +52,7 @@ export async function initDB() {
     console.log('✅ Database initialized');
   } catch (error) {
     console.error('Database init error:', error);
+    throw error;
   }
 }
 
