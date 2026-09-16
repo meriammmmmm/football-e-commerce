@@ -34,10 +34,28 @@ html {
   padding: 0 !important;
   width: 100%;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 * {
   box-sizing: border-box;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+@media (max-width: 374px) {
+  body { font-size: 15px; }
 }
 
 /* Only the main container should have padding, not the hero */

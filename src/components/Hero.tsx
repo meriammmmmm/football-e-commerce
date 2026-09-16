@@ -10,7 +10,7 @@ interface HeroProps {
 
 export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShopNow }: HeroProps) {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden bg-gray-950">
+    <section className="relative flex min-h-[680px] items-center overflow-hidden bg-gray-950 sm:min-h-screen">
       <div className="absolute inset-0">
         {iframeUrl ? (
           <div className="h-full w-full overflow-hidden">
@@ -49,14 +49,14 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShop
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/40" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 pt-32 pb-20 sm:px-6 lg:px-8 z-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300 backdrop-blur-sm">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             Barcelona-born · Curated for football people
           </span>
 
-          <h1 className="mt-6 text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-white min-[375px]:text-5xl sm:text-6xl lg:text-7xl">
             Wear the
             <br />
             <span className="bg-gradient-to-r from-emerald-400 via-lime-300 to-orange-300 bg-clip-text text-transparent">
@@ -64,15 +64,15 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShop
             </span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-300">
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-gray-300 sm:mt-6 sm:text-lg">
             Headbutt Barcelona is a football shirt store born in the city that lives and breathes the game.
             Discover standout kits, timeless stories, and match-day energy delivered to your door.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-8 flex flex-col items-stretch gap-3 min-[375px]:flex-row min-[375px]:flex-wrap min-[375px]:items-center min-[375px]:gap-4">
             <button
               onClick={onShopNow}
-              className="group flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-semibold text-gray-950 transition-all hover:bg-emerald-400 active:scale-95"
+              className="group flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 py-3.5 text-base font-semibold text-gray-950 transition-all hover:bg-emerald-400 active:scale-95 sm:px-8 sm:py-4"
             >
               Shop Now
               <ArrowRight
@@ -82,13 +82,13 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShop
             </button>
             <button
               onClick={onShopNow}
-              className="rounded-full border border-white/20 px-8 py-4 text-base font-medium text-white transition hover:bg-white/10"
+              className="rounded-full border border-white/20 px-6 py-3.5 text-center text-base font-medium text-white transition hover:bg-white/10 sm:px-8 sm:py-4"
             >
               Browse Collection
             </button>
           </div>
 
-          <div className="mt-12 flex flex-wrap gap-x-8 gap-y-4">
+          <div className="mt-10 grid gap-3 min-[375px]:flex min-[375px]:flex-wrap min-[375px]:gap-x-8 min-[375px]:gap-y-4 sm:mt-12">
             {[
               { icon: Truck, label: 'Free shipping over €100' },
               { icon: ShieldCheck, label: 'Curated in Barcelona' },

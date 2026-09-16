@@ -47,7 +47,7 @@ export default function NewsletterSection() {
             {/* Right Side - Form */}
             <div className="flex flex-col items-start lg:items-end">
               <form onSubmit={handleSubmit} className="w-full">
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <input
                     type="email"
                     value={email}
@@ -59,7 +59,7 @@ export default function NewsletterSection() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-8 py-3.5 rounded-xl bg-emerald-500 text-gray-950 font-bold uppercase text-sm tracking-wide transition-all hover:bg-emerald-400 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    className="w-full px-8 py-3.5 rounded-xl bg-emerald-500 text-gray-950 font-bold uppercase text-sm tracking-wide transition-all hover:bg-emerald-400 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap sm:w-auto"
                   >
                     {isSubmitting ? 'JOINING...' : 'JOIN DROP LIST'}
                   </button>

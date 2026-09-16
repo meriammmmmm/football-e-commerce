@@ -54,17 +54,17 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-xs font-medium uppercase tracking-wide text-emerald-600">
             {product.league}
           </span>
           <Rating rating={product.rating} />
         </div>
-        <h3 className="font-semibold text-gray-900 transition-colors group-hover:text-emerald-700">
+        <h3 className="text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-emerald-700 sm:text-base">
           {product.name}
         </h3>
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-2 hidden items-center justify-between min-[375px]:flex">
           <div className="flex items-center gap-1.5">
             <Star size={14} className="fill-amber-400 text-amber-400" />
             <span className="text-sm font-medium text-gray-600">
@@ -73,7 +73,7 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
           </div>
         </div>
         <div className="mt-auto pt-3">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-base font-bold text-gray-900 sm:text-lg">
             €{product.price.toFixed(2)}
           </span>
         </div>

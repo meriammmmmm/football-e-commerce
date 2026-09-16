@@ -37,8 +37,8 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white pt-[76px]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <button
           onClick={onBack}
           className="mb-8 flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
@@ -184,7 +184,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
             </div>
 
             {/* Trust badges */}
-            <div className="mt-10 grid grid-cols-3 gap-4 border-t border-gray-100 pt-8">
+            <div className="mt-10 grid gap-4 border-t border-gray-100 pt-8 min-[375px]:grid-cols-3">
               {[
                 { icon: Truck, label: 'Free shipping over €100' },
                 { icon: ShieldCheck, label: 'Authentic & licensed' },

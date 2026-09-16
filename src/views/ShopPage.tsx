@@ -146,11 +146,11 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
   }, [products, selectedLeague, sortBy, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-[76px]">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">The Shirt Edit</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Shirt Edit</h1>
           <p className="mt-2 text-gray-600">
             Barcelona-curated football shirts, made for match days and memories.{' '}
             {loading ? '' : `${filtered.length} shirts available`}
@@ -158,13 +158,13 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
         </div>
 
         {/* Controls */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="mb-8 space-y-4">
+          <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
             {LEAGUES.map((league) => (
               <button
                 key={league}
                 onClick={() => setSelectedLeague(league)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
                   selectedLeague === league
                     ? 'bg-gray-900 text-white'
                     : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-400'
@@ -175,7 +175,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400 lg:hidden"
@@ -186,7 +186,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition focus:border-emerald-500 focus:outline-none"
+              className="hidden rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition focus:border-emerald-500 focus:outline-none lg:block"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
