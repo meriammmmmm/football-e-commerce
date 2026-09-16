@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { HomePage } from '@/pages/HomePage';
-import { ShopPage } from '@/pages/ShopPage';
-import { ProductDetail } from '@/pages/ProductDetail';
-import { CheckoutPage } from '@/pages/CheckoutPage';
+import { HomePage } from '@/views/HomePage';
+import { ShopPage } from '@/views/ShopPage';
+import { ProductDetail } from '@/views/ProductDetail';
+import { CheckoutPage } from '@/views/CheckoutPage';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
