@@ -2,10 +2,11 @@ import { Pool } from 'pg';
 
 // Get database connection string from environment
 function getConnectionString() {
-  return process.env.POSTGRES_URL || 
+  return process.env.POSTGRES_URL_NON_POOLING || 
+         process.env.POSTGRES_PRISMA_URL ||
+         process.env.POSTGRES_URL || 
          process.env.STORAGE_URL || 
-         process.env.DATABASE_URL ||
-         process.env.POSTGRES_URL_NON_POOLING;
+         process.env.DATABASE_URL;
 }
 
 // Check if database is configured
