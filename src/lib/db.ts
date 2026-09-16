@@ -1,31 +1,42 @@
-import { sql } from '@vercel/postgres';
-import { createPool } from '@vercel/postgres';
+import { Pool } from 'pg';
+
+// Get database connection string from environment
+function getConnectionString() {
+  return process.env.POSTGRES_URL || 
+         process.env.STORAGE_URL || 
+         process.env.DATABASE_URL ||
+         process.env.POSTGRES_URL_NON_POOLING;
+}
 
 // Check if database is configured
 function isDatabaseConfigured() {
-  return !!(process.env.POSTGRES_URL || process.env.STORAGE_URL);
+  return !!getConnectionString();
 }
 
-// Get database connection
+// Create database pool
+let pool: Pool | null = null;
 function getDb() {
-  const connectionString = process.env.POSTGRES_URL || process.env.STORAGE_URL;
+  const connectionString = getConnectionString();
   if (!connectionString) {
     throw new Error('No database connection string found');
   }
-  return createPool({ connectionString });
+  if (!pool) {
+    pool = new Pool({ connectionString, max: 10 });
+  }
+  return pool;
 }
 
 // Initialize database tables
 export async function initDB() {
   if (!isDatabaseConfigured()) {
     console.log('⚠️ Database not configured, using in-memory storage');
-    return;
+    return { success: false, message: 'Database not configured' };
   }
   
   try {
     const db = getDb();
     // Create users table
-    await db.sql`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         full_name TEXT NOT NULL,
@@ -35,10 +46,10 @@ export async function initDB() {
         password_hash TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
-    `;
+    `);
 
     // Create orders table
-    await db.sql`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id TEXT PRIMARY KEY,
         email TEXT NOT NULL,
@@ -47,10 +58,10 @@ export async function initDB() {
         status TEXT DEFAULT 'received',
         created_at TIMESTAMP DEFAULT NOW()
       )
-    `;
+    `);
 
     // Create reviews table
-    await db.sql`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS reviews (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -58,9 +69,10 @@ export async function initDB() {
         copy TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
-    `;
+    `);
 
     console.log('✅ Database initialized');
+    return { success: true, message: 'Database initialized' };
   } catch (error) {
     console.error('Database init error:', error);
     throw error;
@@ -71,16 +83,16 @@ export async function initDB() {
 export async function createUser(fullName: string, phone: string, address: string, email: string, passwordHash: string) {
   const db = getDb();
   const id = `usr_${crypto.randomUUID().slice(0, 8)}`;
-  await db.sql`
-    INSERT INTO users (id, full_name, phone, address, email, password_hash)
-    VALUES (${id}, ${fullName}, ${phone}, ${address}, ${email}, ${passwordHash})
-  `;
+  await db.query(
+    'INSERT INTO users (id, full_name, phone, address, email, password_hash) VALUES ($1, $2, $3, $4, $5, $6)',
+    [id, fullName, phone, address, email, passwordHash]
+  );
   return { id, fullName, phone, address, email, createdAt: new Date().toISOString() };
 }
 
 export async function getUserByEmail(email: string) {
   const db = getDb();
-  const result = await db.sql`SELECT * FROM users WHERE email = ${email} LIMIT 1`;
+  const result = await db.query('SELECT * FROM users WHERE email = $1 LIMIT 1', [email]);
   return result.rows[0] || null;
 }
 
@@ -88,25 +100,23 @@ export async function getUserByEmail(email: string) {
 export async function createOrder(email: string, items: any[], total: number) {
   const db = getDb();
   const id = `HB-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-  await db.sql`
-    INSERT INTO orders (id, email, items, total)
-    VALUES (${id}, ${email}, ${JSON.stringify(items)}, ${total})
-  `;
-  return { id, email, items, total, status: 'received', createdAt: new Date().toISOString() };
+  await db.query(
+    'INSERT INTO orders (id, email, items, total) VALUES ($1, $2, $3, $4)',
+    [id, email, JSON.stringify(items), total]
+  );
+  return { id, email, items, total, status: 'received' as const, createdAt: new Date().toISOString() };
 }
 
 export async function getOrdersByEmail(email: string) {
   const db = getDb();
-  const result = await db.sql`
-    SELECT id, email, items, total, status, created_at
-    FROM orders 
-    WHERE email = ${email}
-    ORDER BY created_at DESC
-  `;
+  const result = await db.query(
+    'SELECT id, email, items, total, status, created_at FROM orders WHERE email = $1 ORDER BY created_at DESC',
+    [email]
+  );
   return result.rows.map(row => ({
     id: row.id,
     email: row.email,
-    items: row.items,
+    items: typeof row.items === 'string' ? JSON.parse(row.items) : row.items,
     total: Number(row.total),
     status: row.status,
     createdAt: row.created_at
@@ -117,15 +127,15 @@ export async function getOrdersByEmail(email: string) {
 export async function createReview(name: string, rating: number, copy: string) {
   const db = getDb();
   const id = `review_${crypto.randomUUID().slice(0, 8)}`;
-  await db.sql`
-    INSERT INTO reviews (id, name, rating, copy)
-    VALUES (${id}, ${name}, ${rating}, ${copy})
-  `;
+  await db.query(
+    'INSERT INTO reviews (id, name, rating, copy) VALUES ($1, $2, $3, $4)',
+    [id, name, rating, copy]
+  );
   return { id, name, rating, copy, createdAt: new Date().toISOString() };
 }
 
 export async function getAllReviews() {
   const db = getDb();
-  const result = await db.sql`SELECT * FROM reviews ORDER BY created_at DESC`;
+  const result = await db.query('SELECT * FROM reviews ORDER BY created_at DESC');
   return result.rows;
 }
