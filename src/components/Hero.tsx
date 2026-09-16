@@ -1,19 +1,30 @@
 import { ArrowRight, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface HeroProps {
   heroImage?: string;
   videoUrl?: string;
   iframeUrl?: string;
   posterUrl?: string;
+  secondSlideImage?: string;
   onShopNow?: () => void;
 }
 
-export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShopNow }: HeroProps) {
+export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, secondSlideImage, onShopNow }: HeroProps) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const hasSecondSlide = Boolean(secondSlideImage);
+
+  useEffect(() => {
+    if (!hasSecondSlide) return;
+    const timer = window.setInterval(() => setActiveSlide((slide) => (slide + 1) % 2), 6500);
+    return () => window.clearInterval(timer);
+  }, [hasSecondSlide]);
+
   return (
     <section className="relative flex min-h-[680px] items-center overflow-hidden bg-gray-950 sm:min-h-screen">
       <div className="absolute inset-0">
         {iframeUrl ? (
-          <div className="h-full w-full overflow-hidden">
+          <div className={`h-full w-full overflow-hidden transition-opacity duration-700 ${activeSlide === 0 ? 'opacity-100' : 'opacity-0'}`}>
             <iframe
               src={iframeUrl}
               title="Hero Video"
@@ -45,6 +56,7 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShop
             className="h-full w-full object-cover opacity-50"
           />
         )}
+        {secondSlideImage && <img src={secondSlideImage} alt="Headbutt football shirts collection" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${activeSlide === 1 ? 'opacity-50' : 'opacity-0'}`} />}
         <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/80 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/40" />
       </div>
@@ -102,6 +114,9 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, onShop
           </div>
         </div>
       </div>
+      {hasSecondSlide && <div className="absolute bottom-6 right-4 z-20 flex gap-2 sm:bottom-8 sm:right-8" aria-label="Hero slides">
+        {[0, 1].map((slide) => <button key={slide} type="button" onClick={() => setActiveSlide(slide)} aria-label={`Show slide ${slide + 1}`} aria-current={activeSlide === slide} className={`h-2.5 rounded-full transition-all ${activeSlide === slide ? 'w-8 bg-emerald-400' : 'w-2.5 bg-white/60 hover:bg-white'}`} />)}
+      </div>}
     </section>
   );
 }

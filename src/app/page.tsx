@@ -57,6 +57,7 @@ export default function Home() {
           <Hero
             iframeUrl={HERO_IFRAME}
             posterUrl={HERO_POSTER}
+            secondSlideImage="/hero-second-slide.avif"
             onShopNow={() => navigate('shop')}
           />
           <HomePage
