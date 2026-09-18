@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ShoppingBag, Check, Truck, ShieldCheck, RefreshCw, Minus, Plus } from 'lucide-react';
 import type { Product } from '@/types';
 import { Rating } from '@/components/Rating';
@@ -11,12 +11,6 @@ interface ProductDetailProps {
   onSelectProduct: (product: Product) => void;
 }
 
-const relatedProducts: Product[] = [
-  { id: 'related-1', name: 'Boca Juniors #10 Maradona', league: 'ARGENTINA', team: 'Boca Juniors', price: 129.99, rating: 5, reviews_count: 312, image_url: '/800084945_28296201710045314_5696377547558753768_n.jpg', sizes: ['S', 'M', 'L', 'XL'], colors: ['Blue', 'Yellow'] },
-  { id: 'related-2', name: 'Man United #10 Van Nistelrooy', league: 'PREMIER LEAGUE', team: 'Manchester United', price: 94.99, rating: 4.8, reviews_count: 203, image_url: '/800594036_1428287385865418_5380508176128630865_n.jpg', sizes: ['S', 'M', 'L', 'XL'], colors: ['Red', 'Black'] },
-  { id: 'related-3', name: 'Netherlands #8 Bergkamp', league: 'NATIONAL TEAM', team: 'Netherlands', price: 109.99, rating: 4.9, reviews_count: 124, image_url: '/805876259_1769531613923629_3124609060888587814_n.jpg', sizes: ['S', 'M', 'L', 'XL'], colors: ['Orange', 'Black'] },
-];
-
 export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
@@ -25,8 +19,22 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
   const [customize, setCustomize] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [playerNumber, setPlayerNumber] = useState('');
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const productImages = [product.image_url, product.hover_image_url].filter((image): image is string => Boolean(image));
   const [selectedImage, setSelectedImage] = useState(product.image_url);
+
+  // Fetch related products from API
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        // Get 3 random products that are not the current product
+        const filtered = data.products.filter((p: Product) => p.id !== product.id);
+        const shuffled = filtered.sort(() => Math.random() - 0.5);
+        setRelatedProducts(shuffled.slice(0, 3));
+      })
+      .catch(() => setRelatedProducts([]));
+  }, [product.id]);
 
   const customizationPrice = 15; // €15 for customization
 
