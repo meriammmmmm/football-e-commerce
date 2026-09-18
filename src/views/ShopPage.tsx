@@ -169,16 +169,67 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
 
         {/* Controls */}
         <div className="mb-8 space-y-4">
-          <div className="grid gap-3 sm:grid-cols-3">
-            <label className="min-w-0"><span className="sr-only">Filter by team</span><select value={selectedTeam} onChange={(event) => setSelectedTeam(event.target.value)} className="h-11 w-full truncate rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All teams</option>{filterOptions.teams.map((team) => <option key={team}>{team}</option>)}</select></label>
-            <label className="min-w-0"><span className="sr-only">Filter by size</span><select value={selectedSize} onChange={(event) => setSelectedSize(event.target.value)} className="h-11 w-full truncate rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All sizes</option>{filterOptions.sizes.map((size) => <option key={size}>{size}</option>)}</select></label>
-            <label className="min-w-0"><span className="sr-only">Filter by availability</span><select value={availability} onChange={(event) => setAvailability(event.target.value)} className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All availability</option><option>In stock</option><option>Sold out</option></select></label>
+          <div className="grid gap-3 sm:grid-cols-3 lg:gap-4">
+            <label className="min-w-0">
+              <span className="sr-only">Filter by team</span>
+              <select 
+                value={selectedTeam} 
+                onChange={(event) => setSelectedTeam(event.target.value)} 
+                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 0.75rem center',
+                  backgroundSize: '1.25rem'
+                }}
+              >
+                <option>All teams</option>
+                {filterOptions.teams.map((team) => <option key={team}>{team}</option>)}
+              </select>
+            </label>
+
+            <label className="min-w-0">
+              <span className="sr-only">Filter by size</span>
+              <select 
+                value={selectedSize} 
+                onChange={(event) => setSelectedSize(event.target.value)} 
+                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 0.75rem center',
+                  backgroundSize: '1.25rem'
+                }}
+              >
+                <option>All sizes</option>
+                {filterOptions.sizes.map((size) => <option key={size}>{size}</option>)}
+              </select>
+            </label>
+
+            <label className="min-w-0">
+              <span className="sr-only">Filter by availability</span>
+              <select 
+                value={availability} 
+                onChange={(event) => setAvailability(event.target.value)} 
+                className="h-12 w-full appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 0.75rem center',
+                  backgroundSize: '1.25rem'
+                }}
+              >
+                <option>All availability</option>
+                <option>In stock</option>
+                <option>Sold out</option>
+              </select>
+            </label>
           </div>
 
           <div className="flex items-center justify-between gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400 lg:hidden"
+              className="flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-400 lg:hidden"
             >
               <SlidersHorizontal size={16} />
               Sort
@@ -186,7 +237,13 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="hidden rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition focus:border-emerald-500 focus:outline-none lg:block"
+              className="hidden h-10 appearance-none rounded-full border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 lg:block"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 0.75rem center',
+                backgroundSize: '1.25rem'
+              }}
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
