@@ -175,7 +175,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
               <select 
                 value={selectedTeam} 
                 onChange={(event) => setSelectedTeam(event.target.value)} 
-                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -183,8 +183,8 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
                   backgroundSize: '1.25rem'
                 }}
               >
-                <option>All teams</option>
-                {filterOptions.teams.map((team) => <option key={team}>{team}</option>)}
+                <option className="py-3 text-base font-medium">All teams</option>
+                {filterOptions.teams.map((team) => <option key={team} className="py-3 text-base font-medium">{team}</option>)}
               </select>
             </label>
 
@@ -193,7 +193,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
               <select 
                 value={selectedSize} 
                 onChange={(event) => setSelectedSize(event.target.value)} 
-                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -201,8 +201,8 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
                   backgroundSize: '1.25rem'
                 }}
               >
-                <option>All sizes</option>
-                {filterOptions.sizes.map((size) => <option key={size}>{size}</option>)}
+                <option className="py-3 text-base font-medium">All sizes</option>
+                {filterOptions.sizes.map((size) => <option key={size} className="py-3 text-base font-medium">{size}</option>)}
               </select>
             </label>
 
@@ -211,7 +211,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
               <select 
                 value={availability} 
                 onChange={(event) => setAvailability(event.target.value)} 
-                className="h-12 w-full appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                className="h-12 w-full appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -219,9 +219,9 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
                   backgroundSize: '1.25rem'
                 }}
               >
-                <option>All availability</option>
-                <option>In stock</option>
-                <option>Sold out</option>
+                <option className="py-3 text-base font-medium">All availability</option>
+                <option className="py-3 text-base font-medium">In stock</option>
+                <option className="py-3 text-base font-medium">Sold out</option>
               </select>
             </label>
           </div>
@@ -237,7 +237,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="hidden h-10 appearance-none rounded-full border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 lg:block"
+              className="hidden h-10 appearance-none rounded-full border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 lg:block [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                 backgroundRepeat: 'no-repeat',
@@ -246,7 +246,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
               }}
             >
               {SORT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option key={opt.value} value={opt.value} className="py-3 text-base font-medium">
                   {opt.label}
                 </option>
               ))}
