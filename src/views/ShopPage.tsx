@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import type { Product } from '@/types';
 import { ProductCard } from '@/components/ProductCard';
 import { SlidersHorizontal, X } from 'lucide-react';
+import { CustomSelect } from '@/components/CustomSelect';
 
 interface ShopPageProps {
   onSelectProduct: (product: Product) => void;
@@ -170,60 +171,26 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
         {/* Controls */}
         <div className="mb-8 space-y-4">
           <div className="grid gap-3 sm:grid-cols-3 lg:gap-4">
-            <label className="min-w-0">
-              <span className="sr-only">Filter by team</span>
-              <select 
-                value={selectedTeam} 
-                onChange={(event) => setSelectedTeam(event.target.value)} 
-                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 0.75rem center',
-                  backgroundSize: '1.25rem'
-                }}
-              >
-                <option className="py-3 text-base font-medium">All teams</option>
-                {filterOptions.teams.map((team) => <option key={team} className="py-3 text-base font-medium">{team}</option>)}
-              </select>
-            </label>
-
-            <label className="min-w-0">
-              <span className="sr-only">Filter by size</span>
-              <select 
-                value={selectedSize} 
-                onChange={(event) => setSelectedSize(event.target.value)} 
-                className="h-12 w-full appearance-none truncate rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 0.75rem center',
-                  backgroundSize: '1.25rem'
-                }}
-              >
-                <option className="py-3 text-base font-medium">All sizes</option>
-                {filterOptions.sizes.map((size) => <option key={size} className="py-3 text-base font-medium">{size}</option>)}
-              </select>
-            </label>
-
-            <label className="min-w-0">
-              <span className="sr-only">Filter by availability</span>
-              <select 
-                value={availability} 
-                onChange={(event) => setAvailability(event.target.value)} 
-                className="h-12 w-full appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700 [&>option:hover]:bg-emerald-50 [&>option:checked]:bg-emerald-600 [&>option:checked]:text-white"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 0.75rem center',
-                  backgroundSize: '1.25rem'
-                }}
-              >
-                <option className="py-3 text-base font-medium">All availability</option>
-                <option className="py-3 text-base font-medium">In stock</option>
-                <option className="py-3 text-base font-medium">Sold out</option>
-              </select>
-            </label>
+            <CustomSelect
+              value={selectedTeam}
+              onChange={setSelectedTeam}
+              options={['All teams', ...filterOptions.teams]}
+              placeholder="All teams"
+            />
+            
+            <CustomSelect
+              value={selectedSize}
+              onChange={setSelectedSize}
+              options={['All sizes', ...filterOptions.sizes]}
+              placeholder="All sizes"
+            />
+            
+            <CustomSelect
+              value={availability}
+              onChange={setAvailability}
+              options={['All availability', 'In stock', 'Sold out']}
+              placeholder="All availability"
+            />
           </div>
 
           <div className="flex items-center justify-between gap-3">
@@ -234,23 +201,17 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
               <SlidersHorizontal size={16} />
               Sort
             </button>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="hidden h-10 appearance-none rounded-full border-2 border-gray-200 bg-white px-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 lg:block [&>option]:py-2 [&>option]:px-4 [&>option]:text-base [&>option]:bg-white [&>option]:text-gray-700"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0.75rem center',
-                backgroundSize: '1.25rem'
-              }}
-            >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value} className="py-3 text-base font-medium">
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className="hidden lg:block lg:w-64">
+              <CustomSelect
+                value={SORT_OPTIONS.find(opt => opt.value === sortBy)?.label || 'Featured'}
+                onChange={(label) => {
+                  const option = SORT_OPTIONS.find(opt => opt.label === label);
+                  if (option) setSortBy(option.value);
+                }}
+                options={SORT_OPTIONS.map(opt => opt.label)}
+                placeholder="Sort by"
+              />
+            </div>
           </div>
         </div>
 
