@@ -282,7 +282,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">Keep the rotation going</p>
               <h2 id="related-products-heading" className="mt-2 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">You may also like</h2>
             </div>
-            <button type="button" onClick={onBack} className="hidden text-sm font-bold text-emerald-700 transition hover:text-emerald-500 sm:block">View all shirts →</button>
+            <button type="button" onClick={onBack} className="text-sm font-bold text-emerald-700 transition hover:text-emerald-500">View all shirts →</button>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
             {relatedProducts.filter((related) => related.id !== product.id).map((related) => <ProductCard key={related.id} product={related} onSelect={onSelectProduct} />)}

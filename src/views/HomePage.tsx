@@ -27,8 +27,8 @@ export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
               </div>
               <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">New Arrivals</h2>
             </div>
-            <button onClick={onShopNow} className="hidden items-center gap-2 text-sm font-semibold text-gray-900 transition hover:text-emerald-600 sm:flex">
-              View All <ArrowRight size={16} />
+            <button onClick={onShopNow} className="flex items-center gap-2 text-sm font-semibold text-emerald-600 transition hover:text-emerald-700">
+              See All <ArrowRight size={16} />
             </button>
           </div>
 
