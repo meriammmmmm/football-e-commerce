@@ -47,17 +47,6 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
 
   const totalPrice = product.price + (customize ? customizationPrice : 0);
 
-  const handleAddToCart = async () => {
-    if (!selectedSize) {
-      setError('Please select a size');
-      return;
-    }
-    setError('');
-    await onAddToCart(product, selectedSize, quantity);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2500);
-  };
-
   return (
     <div className="min-h-screen bg-white pt-[76px]">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
