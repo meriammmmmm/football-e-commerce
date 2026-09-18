@@ -22,8 +22,30 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
+  const [customize, setCustomize] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [playerNumber, setPlayerNumber] = useState('');
   const productImages = [product.image_url, product.hover_image_url].filter((image): image is string => Boolean(image));
   const [selectedImage, setSelectedImage] = useState(product.image_url);
+
+  const customizationPrice = 15; // €15 for customization
+
+  const handleAddToCart = async () => {
+    if (!selectedSize) {
+      setError('Please select a size');
+      return;
+    }
+    if (customize && (!playerName.trim() || !playerNumber.trim())) {
+      setError('Please enter both name and number for customization');
+      return;
+    }
+    setError('');
+    await onAddToCart(product, selectedSize, quantity);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2500);
+  };
+
+  const totalPrice = product.price + (customize ? customizationPrice : 0);
 
   const handleAddToCart = async () => {
     if (!selectedSize) {
@@ -143,6 +165,64 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
               </div>
             </div>
 
+            {/* Customization Option */}
+            <div className="mt-6 rounded-2xl border-2 border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">Customize Your Shirt</h3>
+                  <p className="mt-1 text-xs text-gray-500">Add name & number (+€{customizationPrice})</p>
+                </div>
+                <button
+                  onClick={() => setCustomize(!customize)}
+                  className={`relative h-8 w-14 rounded-full transition ${
+                    customize ? 'bg-emerald-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-sm transition ${
+                      customize ? 'left-7' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {customize && (
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="player-name" className="mb-2 block text-xs font-semibold text-gray-700">
+                      Player Name *
+                    </label>
+                    <input
+                      id="player-name"
+                      type="text"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
+                      placeholder="RONALDO"
+                      maxLength={12}
+                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold uppercase text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="player-number" className="mb-2 block text-xs font-semibold text-gray-700">
+                      Number *
+                    </label>
+                    <input
+                      id="player-number"
+                      type="text"
+                      value={playerNumber}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 2) setPlayerNumber(val);
+                      }}
+                      placeholder="10"
+                      maxLength={2}
+                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Quantity & Add to Cart */}
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-3 rounded-full border border-gray-200 px-3 py-2">
@@ -177,7 +257,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
                 ) : (
                   <>
                     <ShoppingBag size={20} />
-                    Add to Cart · €{(product.price * quantity).toFixed(2)}
+                    Add to Cart · €{(totalPrice * quantity).toFixed(2)}
                   </>
                 )}
               </button>

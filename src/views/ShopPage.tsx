@@ -8,7 +8,6 @@ interface ShopPageProps {
   searchQuery: string;
 }
 
-const LEAGUES = ['All', 'National Team', 'Premier League', 'Argentina', 'Serie A', 'Legends'];
 const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
   { value: 'price-asc', label: 'Price: Low to High' },
@@ -19,7 +18,9 @@ const SORT_OPTIONS = [
 export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedLeague, setSelectedLeague] = useState('All');
+  const [selectedTeam, setSelectedTeam] = useState('All teams');
+  const [selectedSize, setSelectedSize] = useState('All sizes');
+  const [availability, setAvailability] = useState('All availability');
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -107,16 +108,25 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
       },
     ];
 
-    setProducts(mockProducts);
-    setLoading(false);
+    void fetch('/api/products')
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('Could not load catalog.')))
+      .then((data) => setProducts(data.products))
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
   }, []);
+
+  const filterOptions = useMemo(() => ({
+    teams: [...new Set(products.map((product) => product.team).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    sizes: [...new Set(products.flatMap((product) => product.sizes ?? []).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+  }), [products]);
 
   const filtered = useMemo(() => {
     let result = [...products];
 
-    if (selectedLeague !== 'All') {
-      result = result.filter((p) => p.league.toLowerCase() === selectedLeague.toLowerCase());
-    }
+    if (selectedTeam !== 'All teams') result = result.filter((product) => product.team === selectedTeam);
+    if (selectedSize !== 'All sizes') result = result.filter((product) => product.sizes?.includes(selectedSize));
+    if (availability === 'In stock') result = result.filter((product) => product.available);
+    if (availability === 'Sold out') result = result.filter((product) => !product.available);
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -143,7 +153,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
     }
 
     return result;
-  }, [products, selectedLeague, sortBy, searchQuery]);
+  }, [products, selectedTeam, selectedSize, availability, sortBy, searchQuery]);
 
   return (
     <div className="min-h-screen bg-gray-50 pt-[76px]">
@@ -159,20 +169,10 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
 
         {/* Controls */}
         <div className="mb-8 space-y-4">
-          <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-            {LEAGUES.map((league) => (
-              <button
-                key={league}
-                onClick={() => setSelectedLeague(league)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
-                  selectedLeague === league
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                {league}
-              </button>
-            ))}
+          <div className="grid gap-3 sm:grid-cols-3">
+            <label className="min-w-0"><span className="sr-only">Filter by team</span><select value={selectedTeam} onChange={(event) => setSelectedTeam(event.target.value)} className="h-11 w-full truncate rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All teams</option>{filterOptions.teams.map((team) => <option key={team}>{team}</option>)}</select></label>
+            <label className="min-w-0"><span className="sr-only">Filter by size</span><select value={selectedSize} onChange={(event) => setSelectedSize(event.target.value)} className="h-11 w-full truncate rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All sizes</option>{filterOptions.sizes.map((size) => <option key={size}>{size}</option>)}</select></label>
+            <label className="min-w-0"><span className="sr-only">Filter by availability</span><select value={availability} onChange={(event) => setAvailability(event.target.value)} className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-emerald-500"><option>All availability</option><option>In stock</option><option>Sold out</option></select></label>
           </div>
 
           <div className="flex items-center justify-between gap-3">

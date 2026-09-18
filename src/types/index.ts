@@ -12,6 +12,7 @@ export interface Product {
   is_featured?: boolean;
   sizes?: string[];
   colors?: string[];
+  available?: boolean;
 }
 
 export interface CartItem {
