@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import type { Product } from '@/types';
-import homeArrivals from '@/lib/kickoffHomeArrivals.json';
 import { ProductCard } from '@/components/ProductCard';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import CommunityFits from '@/components/CommunityFits';
@@ -13,7 +13,18 @@ interface HomePageProps {
 }
 
 export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
-  const newArrivals = homeArrivals as Product[];
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // Fetch products from API and show first 5
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        const products = Array.isArray(data) ? data : data.products || [];
+        setNewArrivals(products.slice(0, 5)); // Show first 5 products
+      })
+      .catch(() => setNewArrivals([]));
+  }, []);
 
   return (
     <div className="bg-[#0a1628]">
