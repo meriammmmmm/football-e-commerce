@@ -8,8 +8,8 @@ export interface Product {
   price: number;
   sleeveType?: 'short' | 'long';
   category?: string;
-  rating?: number;
-  reviews_count?: number;
+  rating: number;
+  reviews_count: number;
   image_url: string;
   hover_image_url?: string;
   description?: string;

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { CalendarDays, ChevronLeft, CircleUserRound, LockKeyhole, LogOut, Mail, MapPin, Menu, Package, Phone, Search, ShoppingBag, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface HeaderProps { onNavigate: (page: 'home' | 'shop') => void; currentPage: 'home' | 'shop' | 'product' | 'checkout'; onSearch: (query: string) => void; cartItemCount?: number; onOpenCart?: () => void; }
 type AuthMode = 'signin' | 'signup'; type AccountView = 'home' | 'orders' | 'profile';
@@ -13,7 +13,8 @@ const initialAccount = (): Account | null => { if (typeof window === 'undefined'
 
 export default function Header({ onNavigate, currentPage, onSearch, cartItemCount = 0, onOpenCart }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false); const [accountOpen, setAccountOpen] = useState(false); const [authMode, setAuthMode] = useState<AuthMode>('signin'); const [accountView, setAccountView] = useState<AccountView>('home'); const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [form, setForm] = useState<FormFields>(blankForm); const [account, setAccount] = useState<Account | null>(initialAccount); const [orders, setOrders] = useState<Order[]>([]); const [error, setError] = useState(''); const [isSubmitting, setIsSubmitting] = useState(false); const [ordersLoading, setOrdersLoading] = useState(false);
+  const [form, setForm] = useState<FormFields>(blankForm); const [account, setAccount] = useState<Account | null>(null); const [orders, setOrders] = useState<Order[]>([]); const [error, setError] = useState(''); const [isSubmitting, setIsSubmitting] = useState(false); const [ordersLoading, setOrdersLoading] = useState(false);
+  useEffect(() => { setAccount(initialAccount()); }, []);
   const signedIn = Boolean(account?.email); const navigate = (page: 'home' | 'shop') => { onNavigate(page); setMenuOpen(false); };
   const navItem = (page: 'home' | 'shop', label: string) => <button onClick={() => navigate(page)} className={`relative py-2 text-sm font-bold uppercase tracking-[0.13em] transition ${(page === 'home' ? currentPage === 'home' : currentPage !== 'home') ? 'text-white after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-emerald-400' : 'text-slate-400 hover:text-emerald-300'}`}>{label}</button>;
   const openAccount = () => { setAccountView('home'); setError(''); setAccountOpen(true); };
