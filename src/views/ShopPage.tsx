@@ -111,7 +111,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
 
     void fetch('/api/products')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Could not load catalog.')))
-      .then((data) => setProducts(data.products))
+      .then((data) => setProducts(Array.isArray(data) ? data : data.products || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
   }, []);
@@ -135,7 +135,8 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.team.toLowerCase().includes(q) ||
-          p.league.toLowerCase().includes(q),
+          (p.league && p.league.toLowerCase().includes(q)) ||
+          (p.player && p.player.toLowerCase().includes(q)),
       );
     }
 
@@ -147,7 +148,7 @@ export function ShopPage({ onSelectProduct, searchQuery }: ShopPageProps) {
         result.sort((a, b) => b.price - a.price);
         break;
       case 'rating':
-        result.sort((a, b) => b.rating - a.rating);
+        result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       default:
         result.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));

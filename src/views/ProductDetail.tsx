@@ -29,7 +29,8 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
       .then(res => res.json())
       .then(data => {
         // Get 3 random products that are not the current product
-        const filtered = data.products.filter((p: Product) => p.id !== product.id);
+        const allProducts = Array.isArray(data) ? data : data.products || [];
+        const filtered = allProducts.filter((p: Product) => p.id !== product.id);
         const shuffled = filtered.sort(() => Math.random() - 0.5);
         setRelatedProducts(shuffled.slice(0, 3));
       })
