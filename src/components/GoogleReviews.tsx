@@ -20,7 +20,7 @@ const reviews: Review[] = [
     initials: 'SW',
     age: 'last month',
     copy: 'Great and friendly store with a great selection of jerseys. My son was in heaven 😄',
-    photo: '/806159190_1817067686129823_5538669484468410465_n.jpg',
+    photo: '/products/080B6C0F-BF0C-4050-A339-FD6CD3FB37A7.JPG',
     avatarClass: 'bg-slate-700 text-slate-100',
   },
   {
@@ -28,7 +28,7 @@ const reviews: Review[] = [
     initials: 'BP',
     age: '2 months ago',
     copy: 'Nick was so helpful and patient! Got amazing Ronaldo jerseys in almost pristine condition.',
-    photo: '/803539669_2111356956434067_4943158849259072036_n.jpg',
+    photo: '/products/0DB5904D-372D-4D8E-A2F9-3BFF07454CA6.JPG',
     avatarClass: 'bg-amber-500/20 text-amber-300',
   },
   {
@@ -36,7 +36,7 @@ const reviews: Review[] = [
     initials: 'WP',
     age: '2 months ago',
     copy: 'If you want to rizz up or just talk football, come through and say hello to the kick off vintage crew, they are amazing.',
-    photo: '/805876259_1769531613923629_3124609060888587814_n.jpg',
+    photo: '/products/65CF9DBA-07AA-483A-9C96-58761782AE26.JPG',
     avatarClass: 'bg-emerald-500/20 text-emerald-300',
   },
   {
@@ -44,7 +44,7 @@ const reviews: Review[] = [
     initials: 'GQ',
     age: '2 days ago',
     copy: 'Colección increíble! Jerseys en excelentes condiciones y hacen envíos internacionales. Seguro me verán de nuevo.',
-    photo: '/800084945_28296201710045314_5696377547558753768_n.jpg',
+    photo: '/products/AFFE99A3-9EED-4E8E-B6A2-C6117759DBA5.JPG',
     avatarClass: 'bg-rose-500/20 text-rose-300',
   },
   {
@@ -52,7 +52,7 @@ const reviews: Review[] = [
     initials: 'MR',
     age: 'a week ago',
     copy: 'A proper treasure trove for football shirt lovers. The team know their history and helped me find the perfect Barça classic.',
-    photo: '/808264817_3243795792472566_9045503013690706812_n.jpg',
+    photo: '/products/B8E00567-0DD3-4F13-99C8-7848DA0A0FE3.JPG',
     avatarClass: 'bg-violet-500/20 text-violet-300',
   },
 ];
