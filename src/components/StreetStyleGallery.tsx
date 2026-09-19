@@ -5,11 +5,11 @@ import { ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 
 const looks = [
-  { title: 'Real Madrid icon', shirt: 'Zidane #5 Home', image: '/080B6C0F-BF0C-4050-A339-FD6CD3FB37A7.JPG' },
-  { title: 'England legend', shirt: 'Gascoigne #19', image: '/17C71FF2-C66F-4EA4-A29F-FBA884267617.JPG' },
-  { title: 'Brazil glory', shirt: 'Rivaldo #10', image: '/0AD711F0-15A4-458B-975A-1A4DEF374607.JPG' },
-  { title: 'Dutch master', shirt: 'Bergkamp #8', image: '/65CF9DBA-07AA-483A-9C96-58761782AE26.JPG' },
-  { title: 'United legend', shirt: 'Van Nistelrooy #10', image: '/AFFE5C38-7153-4A0A-8820-D061D6431B7D.JPG' },
+  { title: 'Barcelona streets', shirt: 'Argentina & Boca retro', image: '/756436518_18103895371999396_4894283240947071173_n.jpg' },
+  { title: 'Ronaldo legacy', shirt: 'Brazil 2002 #9', image: '/757954847_18103895350999396_5983842247708972129_n.jpg' },
+  { title: 'Milan heritage', shirt: 'AC Milan bwin era', image: '/756857788_18103895326999396_4513381999901559894_n.jpg' },
+  { title: 'Double fit drop', shirt: 'Brazil & Milan combo', image: '/756833144_18103895335999396_8990120619776430882_n.jpg' },
+  { title: 'Argentina classic', shirt: 'Maradona #10 retro', image: '/758006664_18103895362999396_7962434200034526890_n.jpg' },
 ];
 
 interface StreetStyleGalleryProps {
