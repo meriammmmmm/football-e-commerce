@@ -16,6 +16,66 @@
   },
   {
     "id": "hb-002",
+    "name": "Argentina 1994 Retro #10 Maradona Jersey",
+    "team": "Argentina",
+    "player": "Maradona",
+    "number": "10",
+    "price": 99.99,
+    "sleeveType": "short",
+    "category": "Retro Jerseys",
+    "image_url": "/758006664_18103895362999396_7962434200034526890_n.jpg",
+    "hover_image_url": "/756436518_18103895371999396_4894283240947071173_n.jpg",
+    "description": "Iconic Argentina 1994 World Cup jersey with Maradona #10. Classic blue away kit with legendary diamond pattern.",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "inStock": true
+  },
+  {
+    "id": "hb-003",
+    "name": "Boca Juniors 2000 Home Jersey",
+    "team": "Boca Juniors",
+    "player": "Retro",
+    "number": "",
+    "price": 95.99,
+    "sleeveType": "short",
+    "category": "Retro Jerseys",
+    "image_url": "/756436518_18103895371999396_4894283240947071173_n.jpg",
+    "hover_image_url": "/758006664_18103895362999396_7962434200034526890_n.jpg",
+    "description": "Classic Boca Juniors home jersey with iconic blue and yellow colors. Legendary South American football heritage.",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "inStock": true
+  },
+  {
+    "id": "hb-004",
+    "name": "Brazil Ronaldo #9 Long Sleeve 2002 Jersey",
+    "team": "Brazil",
+    "player": "Ronaldo",
+    "number": "9",
+    "price": 189.99,
+    "sleeveType": "long",
+    "category": "Retro Jerseys",
+    "image_url": "/757954847_18103895350999396_5983842247708972129_n.jpg",
+    "hover_image_url": "/756833144_18103895335999396_8990120619776430882_n.jpg",
+    "description": "Legendary Brazil 2002 World Cup jersey with Ronaldo #9. Long sleeve edition from the tournament where El Fenomeno led Brazil to glory.",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "inStock": true
+  },
+  {
+    "id": "hb-005",
+    "name": "AC Milan bwin Era 2007 Home Jersey",
+    "team": "AC Milan",
+    "player": "Retro",
+    "number": "",
+    "price": 98.99,
+    "sleeveType": "long",
+    "category": "Retro Jerseys",
+    "image_url": "/756857788_18103895326999396_4513381999901559894_n.jpg",
+    "hover_image_url": "/756833144_18103895335999396_8990120619776430882_n.jpg",
+    "description": "AC Milan home jersey from the bwin sponsorship era. Iconic red and black stripes from San Siro's golden years.",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "inStock": true
+  },
+  {
+    "id": "hb-006",
     "name": "England #8 Retro Home Jersey",
     "team": "England",
     "player": "Retro",
@@ -30,7 +90,7 @@
     "inStock": true
   },
   {
-    "id": "hb-003",
+    "id": "hb-007",
     "name": "England Gascoigne #19 Home Jersey",
     "team": "England",
     "player": "Gascoigne",
@@ -45,7 +105,7 @@
     "inStock": true
   },
   {
-    "id": "hb-004",
+    "id": "hb-008",
     "name": "Brazil Rivaldo #10 Home Jersey",
     "team": "Brazil",
     "player": "Rivaldo",
@@ -60,7 +120,7 @@
     "inStock": true
   },
   {
-    "id": "hb-005",
+    "id": "hb-009",
     "name": "Brazil Romário #11 Home Jersey",
     "team": "Brazil",
     "player": "Romário",
@@ -75,7 +135,7 @@
     "inStock": true
   },
   {
-    "id": "hb-006",
+    "id": "hb-010",
     "name": "Netherlands Bergkamp #8 Home Jersey",
     "team": "Netherlands",
     "player": "Bergkamp",
@@ -90,7 +150,7 @@
     "inStock": true
   },
   {
-    "id": "hb-007",
+    "id": "hb-011",
     "name": "England Keane #16 Home Jersey",
     "team": "England",
     "player": "Keane",
@@ -105,7 +165,7 @@
     "inStock": true
   },
   {
-    "id": "hb-008",
+    "id": "hb-012",
     "name": "Manchester United Van Nistelrooy #10 Jersey",
     "team": "Manchester United",
     "player": "Van Nistelrooy",
@@ -120,7 +180,7 @@
     "inStock": true
   },
   {
-    "id": "hb-009",
+    "id": "hb-013",
     "name": "Manchester United Vodafone Era Jersey",
     "team": "Manchester United",
     "player": "Retro",
@@ -135,7 +195,7 @@
     "inStock": true
   },
   {
-    "id": "hb-010",
+    "id": "hb-014",
     "name": "England Scholes #8 Home Jersey",
     "team": "England",
     "player": "Scholes",
@@ -150,7 +210,7 @@
     "inStock": true
   },
   {
-    "id": "hb-011",
+    "id": "hb-015",
     "name": "Manchester United Champions League 1999 Jersey",
     "team": "Manchester United",
     "player": "Retro",
@@ -165,7 +225,7 @@
     "inStock": true
   },
   {
-    "id": "hb-012",
+    "id": "hb-016",
     "name": "AC Milan Shevchenko #7 Home Jersey",
     "team": "AC Milan",
     "player": "Shevchenko",
