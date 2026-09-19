@@ -1,3 +1,5 @@
-import catalog from '@/lib/kickoffCatalog.json';
+import products from '@/lib/headbuttProducts.json';
 
-export async function GET() { return Response.json({ products: catalog }); }
+export async function GET() { 
+  return Response.json(products); 
+}
