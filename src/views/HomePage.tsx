@@ -16,12 +16,12 @@ export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
 
   useEffect(() => {
-    // Fetch products from API and show first 5
+    // Fetch products from API and show first 4
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
         const products = Array.isArray(data) ? data : data.products || [];
-        setNewArrivals(products.slice(0, 5)); // Show first 5 products
+        setNewArrivals(products.slice(0, 4)); // Show first 4 products
       })
       .catch(() => setNewArrivals([]));
   }, []);
@@ -29,7 +29,7 @@ export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
   return (
     <div className="bg-[#0a1628]">
       <section className="bg-gray-50 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1800px] px-4 sm:px-6 lg:px-8">
           <div className="mb-10 flex items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-emerald-600">
@@ -43,7 +43,7 @@ export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4 lg:gap-10">
             {newArrivals.map((product) => <ProductCard key={product.id} product={product} onSelect={onSelectProduct} />)}
           </div>
         </div>
