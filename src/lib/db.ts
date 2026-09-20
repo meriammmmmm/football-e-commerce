@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { createDemoReview, getDemoReviews } from '@/lib/demoStore';
+import { createDemoReview, getDemoReviews, createDemoOrder, getDemoOrders } from '@/lib/demoStore';
 
 // Get database connection string from environment
 function getConnectionString() {
@@ -11,7 +11,7 @@ function getConnectionString() {
 }
 
 // Check if database is configured
-function isDatabaseConfigured() {
+export function isDatabaseConfigured() {
   return !!getConnectionString();
 }
 
@@ -101,6 +101,8 @@ export async function getUserByEmail(email: string) {
 
 // Order operations
 export async function createOrder(email: string, items: any[], total: number) {
+  if (!isDatabaseConfigured()) return createDemoOrder(email, items);
+
   const db = getDb();
   const id = `HB-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
   await db.query(
@@ -111,6 +113,8 @@ export async function createOrder(email: string, items: any[], total: number) {
 }
 
 export async function getOrdersByEmail(email: string) {
+  if (!isDatabaseConfigured()) return getDemoOrders(email);
+
   const db = getDb();
   const result = await db.query(
     'SELECT id, email, items, total, status, created_at FROM orders WHERE email = $1 ORDER BY created_at DESC',
