@@ -53,3 +53,5 @@ export function createDemoReview(name: string, rating: number, copy: string): De
   submittedReviews.unshift(review);
   return review;
 }
+
+export function getDemoReviews(): DemoReview[] { return submittedReviews; }

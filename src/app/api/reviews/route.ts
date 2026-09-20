@@ -1,4 +1,13 @@
-import { createReview } from '@/lib/db';
+import { createReview, getAllReviews } from '@/lib/db';
+
+export async function GET() {
+  try {
+    return Response.json({ reviews: await getAllReviews() });
+  } catch (error) {
+    console.error('Review loading error:', error);
+    return Response.json({ error: 'Failed to load reviews.' }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   try {

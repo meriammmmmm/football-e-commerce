@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { createDemoReview, getDemoReviews } from '@/lib/demoStore';
 
 // Get database connection string from environment
 function getConnectionString() {
@@ -16,6 +17,7 @@ function isDatabaseConfigured() {
 
 // Create database pool
 let pool: Pool | null = null;
+let reviewsTableReady: Promise<void> | null = null;
 function getDb() {
   const connectionString = getConnectionString();
   if (!connectionString) {
@@ -126,7 +128,17 @@ export async function getOrdersByEmail(email: string) {
 
 // Review operations
 export async function createReview(name: string, rating: number, copy: string) {
+  if (!isDatabaseConfigured()) return createDemoReview(name, rating, copy);
+
   const db = getDb();
+  reviewsTableReady ??= db.query(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL,
+      rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+      copy TEXT NOT NULL, created_at TIMESTAMP DEFAULT NOW()
+    )
+  `).then(() => undefined);
+  await reviewsTableReady;
   const id = `review_${crypto.randomUUID().slice(0, 8)}`;
   await db.query(
     'INSERT INTO reviews (id, name, rating, copy) VALUES ($1, $2, $3, $4)',
@@ -136,7 +148,17 @@ export async function createReview(name: string, rating: number, copy: string) {
 }
 
 export async function getAllReviews() {
+  if (!isDatabaseConfigured()) return getDemoReviews();
+
   const db = getDb();
+  reviewsTableReady ??= db.query(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL,
+      rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+      copy TEXT NOT NULL, created_at TIMESTAMP DEFAULT NOW()
+    )
+  `).then(() => undefined);
+  await reviewsTableReady;
   const result = await db.query('SELECT * FROM reviews ORDER BY created_at DESC');
-  return result.rows;
+  return result.rows.map((row) => ({ id: row.id, name: row.name, rating: Number(row.rating), copy: row.copy, createdAt: new Date(row.created_at).toISOString() }));
 }
