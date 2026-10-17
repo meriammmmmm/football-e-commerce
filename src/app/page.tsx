@@ -50,14 +50,14 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0a1628]" style={{ margin: 0, padding: 0, width: '100%' }}>
-      <Header onNavigate={navigate} currentPage={page} onSearch={setSearchQuery} cartItemCount={cartItemCount} onOpenCart={() => setCartOpen(true)} />
+      <Header onNavigate={navigate} currentPage={page} onSearch={setSearchQuery} onSelectProduct={selectProduct} cartItemCount={cartItemCount} onOpenCart={() => setCartOpen(true)} />
 
       {page === 'home' && (
         <div style={{ margin: 0, padding: 0, width: '100%' }}>
           <Hero
             iframeUrl={HERO_IFRAME}
             posterUrl={HERO_POSTER}
-            secondSlideImage="/hero-second-slide.avif"
+            secondSlideImage="/757954847_18103895350999396_5983842247708972129_n.jpg"
             onShopNow={() => navigate('shop')}
           />
           <HomePage
@@ -73,6 +73,7 @@ export default function Home() {
 
       {page === 'product' && selectedProduct && (
         <ProductDetail
+          key={selectedProduct.id}
           product={selectedProduct}
           onBack={() => navigate('shop')}
           onAddToCart={handleAddToCart}

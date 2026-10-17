@@ -3,6 +3,7 @@
 import { Star, ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 import { Rating } from './Rating';
+import { motion } from 'framer-motion';
 
 interface ProductCardProps {
   product: Product;
@@ -11,7 +12,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onSelect }: ProductCardProps) {
   return (
-    <button
+    <motion.button
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -8 }}
       onClick={() => onSelect(product)}
       className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/60"
     >
@@ -78,6 +84,6 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
           </span>
         </div>
       </div>
-    </button>
+    </motion.button>
   );
 }

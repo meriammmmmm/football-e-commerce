@@ -1,6 +1,7 @@
 'use client';
 
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface CommunityFit {
   id: string;
@@ -85,7 +86,13 @@ export default function CommunityFits() {
     <section className="bg-[#0a1628] py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
           <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-emerald-400 mb-3">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
             CURATED ON THE STREETS OF EL RAVAL & GÒTIC
@@ -98,13 +105,25 @@ export default function CommunityFits() {
             <span className="text-emerald-400 font-semibold">@headbutt.bcn</span> or{' '}
             <span className="text-emerald-400 font-semibold">#HeadbuttFits</span> on Instagram to be featured on our grid.
           </p>
-        </div>
+        </motion.div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          {['ALL FITS', 'MATCH DAY', 'STREETWEAR', 'RETRO CLASSICS', 'NATIONAL'].map((tab) => (
-            <button
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex flex-wrap gap-3 mb-8"
+        >
+          {['ALL FITS', 'MATCH DAY', 'STREETWEAR', 'RETRO CLASSICS', 'NATIONAL'].map((tab, idx) => (
+            <motion.button
               key={tab}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.3 + idx * 0.05 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
                 tab === 'ALL FITS'
                   ? 'bg-emerald-500 text-gray-950'
@@ -112,16 +131,21 @@ export default function CommunityFits() {
               }`}
             >
               {tab}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {fits.map((fit) => (
-            <div
+          {fits.map((fit, index) => (
+            <motion.div
               key={fit.id}
-              className="group relative overflow-hidden rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:scale-[1.02] hover:border-emerald-500/30"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="group relative overflow-hidden rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-emerald-500/30"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">
@@ -193,7 +217,7 @@ export default function CommunityFits() {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
