@@ -4,7 +4,9 @@ import type { CartItem } from '@/types';
 
 // Get database connection string from environment
 function getConnectionString() {
-  return process.env.SUPABASE_DB_URL ||
+  return process.env.NEON_DATABASE_URL ||
+         process.env.NEON_DATABASE_URL_UNPOOLED ||
+         process.env.SUPABASE_DB_URL ||
          process.env.SUPABASE_DATABASE_URL ||
          process.env.POSTGRES_URL_NON_POOLING ||
          process.env.POSTGRES_PRISMA_URL ||
