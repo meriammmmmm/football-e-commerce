@@ -73,7 +73,7 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-[#0a1628]/60" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-20 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8">
         <div className="max-w-2xl">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
@@ -89,7 +89,7 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-white min-[375px]:text-5xl sm:text-6xl lg:text-7xl"
+            className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white min-[375px]:text-[2.75rem] sm:mt-6 sm:text-6xl lg:text-7xl"
           >
             Wear the
             <br />
@@ -154,33 +154,33 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
       {hasSecondSlide && (
         <>
           {/* Navigation Arrows */}
-          <div className="absolute left-4 top-1/2 z-20 -translate-y-1/2 sm:left-8">
+          <div className="absolute bottom-6 left-4 z-20 sm:left-6 sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2 lg:left-8">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               type="button"
               onClick={() => setActiveSlide((slide) => (slide === 0 ? 1 : 0))}
               aria-label="Previous slide"
-              className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-black/40 text-white backdrop-blur-md transition-all hover:border-emerald-400 hover:bg-emerald-500/20"
+              className="touch-manipulation flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/30 bg-black/50 text-white shadow-lg backdrop-blur-md transition-all hover:border-emerald-400 hover:bg-emerald-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628] sm:h-12 sm:w-12"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={22} className="sm:h-6 sm:w-6" />
             </motion.button>
           </div>
-          <div className="absolute right-4 top-1/2 z-20 -translate-y-1/2 sm:right-8">
+          <div className="absolute bottom-6 right-4 z-20 sm:right-6 sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2 lg:right-8">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               type="button"
               onClick={() => setActiveSlide((slide) => (slide === 0 ? 1 : 0))}
               aria-label="Next slide"
-              className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-black/40 text-white backdrop-blur-md transition-all hover:border-emerald-400 hover:bg-emerald-500/20"
+              className="touch-manipulation flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/30 bg-black/50 text-white shadow-lg backdrop-blur-md transition-all hover:border-emerald-400 hover:bg-emerald-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628] sm:h-12 sm:w-12"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={22} className="sm:h-6 sm:w-6" />
             </motion.button>
           </div>
           
           {/* Slide Indicators */}
-          <div className="absolute bottom-6 right-4 z-20 flex gap-2 sm:bottom-8 sm:right-8" aria-label="Hero slides">
+          <div className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-8 sm:left-auto sm:right-8 sm:translate-x-0" aria-label="Hero slides">
             {[0, 1].map((slide) => (
               <button
                 key={slide}

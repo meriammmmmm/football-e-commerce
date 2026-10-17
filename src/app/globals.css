@@ -58,6 +58,20 @@ textarea {
   body { font-size: 15px; }
 }
 
+/* Keep the compact header usable before the desktop navigation breakpoint. */
+@media (max-width: 639px) {
+  header button[aria-label="Open search"] {
+    width: 2.75rem;
+    flex: 0 0 2.75rem;
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  header button[aria-label="Open search"] span {
+    display: none;
+  }
+}
+
 /* Only the main container should have padding, not the hero */
 main > *:not(section) {
   max-width: 1280px;

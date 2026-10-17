@@ -13,8 +13,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Headbutt - Football Jerseys Barcelona",
-  description: "Premium football jerseys store in Barcelona",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://football-e-commerce-bay.vercel.app",
+  ),
+  title: {
+    default: "Headbutt Barcelona | Vintage Football Shirts",
+    template: "%s | Headbutt Barcelona",
+  },
+  description:
+    "Discover standout vintage football shirts, timeless kits, and iconic player jerseys from Headbutt Barcelona.",
+  applicationName: "Headbutt Barcelona",
+  icons: {
+    icon: "/headbutt-logo.jpg",
+    apple: "/headbutt-logo.jpg",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Headbutt Barcelona",
+    title: "Headbutt Barcelona | Vintage Football Shirts",
+    description:
+      "Discover standout vintage football shirts, timeless kits, and iconic player jerseys from Headbutt Barcelona.",
+    images: [
+      {
+        url: "/headbutt-logo.jpg",
+        width: 1080,
+        height: 1080,
+        alt: "Headbutt Barcelona football shirts",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Headbutt Barcelona | Vintage Football Shirts",
+    description:
+      "Discover standout vintage football shirts, timeless kits, and iconic player jerseys from Headbutt Barcelona.",
+    images: ["/headbutt-logo.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
