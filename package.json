@@ -10,7 +10,6 @@
     "init-db": "tsx scripts/init-db.ts"
   },
   "dependencies": {
-    "@next/swc-darwin-arm64": "^16.3.5",
     "@vercel/postgres": "^0.10.0",
     "framer-motion": "^14.3.0",
     "lucide-react": "^1.46.0",

@@ -1,7 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
-
 import { ChevronRight } from 'lucide-react';
 
 interface LeagueCardProps {
