@@ -1,20 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, ArrowRight } from 'lucide-react';
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitted(false);
     // Handle newsletter signup here
     console.log('Newsletter signup:', email);
     setTimeout(() => {
       setIsSubmitting(false);
       setEmail('');
+      setSubmitted(true);
     }, 1000);
   };
 
@@ -61,9 +63,10 @@ export default function NewsletterSection() {
                     disabled={isSubmitting}
                     className="w-full px-8 py-3.5 rounded-xl bg-emerald-500 text-gray-950 font-bold uppercase text-sm tracking-wide transition-all hover:bg-emerald-400 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap sm:w-auto"
                   >
-                    {isSubmitting ? 'JOINING...' : 'JOIN DROP LIST'}
+                    {isSubmitting ? 'JOINING...' : submitted ? 'YOU’RE IN ✓' : 'JOIN DROP LIST'}
                   </button>
                 </div>
+                {submitted && <div aria-live="polite" className="mt-3 text-center text-sm font-bold text-emerald-300">Welcome to the Headbutt Club ✦</div>}
                 <p className="mt-3 text-xs text-gray-500 text-center">
                   No spam. Only authentic drops and matchday culture.
                 </p>

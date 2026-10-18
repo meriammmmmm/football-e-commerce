@@ -1,7 +1,8 @@
 'use client';
 
-import { Heart, ShoppingBag, Eye } from 'lucide-react';
+import { Heart, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface CommunityFit {
   id: string;
@@ -18,6 +19,7 @@ interface CommunityFit {
 }
 
 export default function CommunityFits() {
+  const [activeFilter, setActiveFilter] = useState('ALL FITS');
   const fits: CommunityFit[] = [
     {
       id: '1',
@@ -124,8 +126,9 @@ export default function CommunityFits() {
               transition={{ duration: 0.3, delay: 0.3 + idx * 0.05 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => setActiveFilter(tab)}
               className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
-                tab === 'ALL FITS'
+                tab === activeFilter
                   ? 'bg-emerald-500 text-gray-950'
                   : 'bg-white/10 text-white hover:bg-white/20'
               }`}
@@ -137,9 +140,10 @@ export default function CommunityFits() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {fits.map((fit, index) => (
+          {fits.filter((fit) => activeFilter === 'ALL FITS' || fit.tag.includes(activeFilter.replace(' ', '')) || (activeFilter === 'NATIONAL' && fit.product_name.includes('Argentina'))).map((fit, index) => (
             <motion.div
               key={fit.id}
+              layout
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}

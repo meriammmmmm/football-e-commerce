@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 border-t border-gray-800 py-12">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10 overflow-hidden rounded bg-emerald-600">
@@ -48,6 +48,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+        <div aria-hidden="true" className="mb-8 overflow-hidden text-[clamp(4rem,16vw,14rem)] font-black leading-[0.72] tracking-[-0.1em] text-white/[0.04] select-none">HEADBUTT</div>
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
           <p>© 2026 Headbutt Barcelona. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">

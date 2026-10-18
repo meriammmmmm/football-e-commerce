@@ -30,6 +30,20 @@ export default function Header({ onNavigate, currentPage, onSearch, onSelectProd
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
+  useEffect(() => {
+    const header = document.querySelector('header');
+    if (!header) return;
+    let previousY = window.scrollY;
+    const updateHeader = () => {
+      const currentY = window.scrollY;
+      header.classList.toggle('header-scrolled', currentY > 80);
+      header.classList.toggle('header-hidden', currentY > previousY + 8 && currentY > 140);
+      if (currentY < previousY - 8 || currentY < 40) header.classList.remove('header-hidden');
+      previousY = currentY;
+    };
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    return () => window.removeEventListener('scroll', updateHeader);
+  }, []);
   const signedIn = Boolean(account?.email); const navigate = (page: 'home' | 'shop') => { onNavigate(page); setMenuOpen(false); };
   const navItem = (page: 'home' | 'shop', label: string) => <button onClick={() => navigate(page)} className={`relative py-2 text-sm font-bold uppercase tracking-[0.13em] transition ${(page === 'home' ? currentPage === 'home' : currentPage !== 'home') ? 'text-white after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-emerald-400' : 'text-slate-400 hover:text-emerald-300'}`}>{label}</button>;
   const openAccount = () => { setAccountView('home'); setError(''); setAccountOpen(true); };

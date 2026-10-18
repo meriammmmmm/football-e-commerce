@@ -29,6 +29,45 @@ body {
   overflow-x: hidden;
 }
 
+header {
+  transition: transform 320ms ease, background-color 320ms ease, backdrop-filter 320ms ease, border-color 320ms ease;
+}
+
+header.header-scrolled {
+  background: rgba(11, 20, 35, 0.72);
+  border-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+header.header-hidden { transform: translateY(-100%); }
+
+.custom-cursor {
+  position: fixed;
+  top: -7px;
+  left: -7px;
+  z-index: 200;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border: 1px solid rgba(110, 231, 183, 0.9);
+  border-radius: 999px;
+  background: rgba(62, 207, 142, 0.75);
+  box-shadow: 0 0 18px rgba(62, 207, 142, 0.45);
+  transition: width 180ms ease, height 180ms ease, top 180ms ease, left 180ms ease, background 180ms ease;
+}
+
+.custom-cursor.is-hovering {
+  top: -14px;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  background: rgba(62, 207, 142, 0.18);
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .custom-cursor { display: none; }
+}
+
 html {
   margin: 0 !important;
   padding: 0 !important;
@@ -95,6 +134,7 @@ main > *:not(section) {
 @keyframes searchFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes searchDropIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes searchRiseIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes depthPulse { 0%, 100% { box-shadow: 0 20px 55px rgba(16, 185, 129, .08); } 50% { box-shadow: 0 28px 70px rgba(16, 185, 129, .2); } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

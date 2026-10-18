@@ -2,7 +2,11 @@
 
 import { ArrowRight, Truck, ShieldCheck, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import MagneticButton from './MagneticButton';
+
+const ShirtScene = dynamic(() => import('./ShirtScene'), { ssr: false });
 
 interface HeroProps {
   heroImage?: string;
@@ -16,6 +20,9 @@ interface HeroProps {
 export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, secondSlideImage, onShopNow }: HeroProps) {
   const [activeSlide, setActiveSlide] = useState(0);
   const hasSecondSlide = Boolean(secondSlideImage);
+  const { scrollY } = useScroll();
+  const backgroundY = useTransform(scrollY, [0, 700], [0, 110]);
+  const backgroundScale = useTransform(scrollY, [0, 700], [1, 1.08]);
 
   useEffect(() => {
     if (!hasSecondSlide) return;
@@ -24,8 +31,8 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
   }, [hasSecondSlide]);
 
   return (
-    <section className="relative flex min-h-[680px] items-center overflow-hidden bg-[#0a1628] sm:min-h-screen">
-      <div className="absolute inset-0">
+    <section className="relative flex min-h-[680px] items-center overflow-hidden bg-[#0a1628] [perspective:1600px] sm:min-h-screen">
+      <motion.div style={{ y: backgroundY, scale: backgroundScale }} className="absolute inset-0 transform-gpu [transform:translateZ(-40px)_scale(1.04)]">
         {iframeUrl ? (
           <div className={`h-full w-full overflow-hidden transition-opacity duration-700 ${activeSlide === 0 ? 'opacity-100' : 'opacity-0'}`}>
             <iframe
@@ -71,7 +78,7 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/80 to-gray-950/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-[#0a1628]/60" />
-      </div>
+      </motion.div>
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-28 pt-20 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8">
         <div className="max-w-2xl">
@@ -114,16 +121,16 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
             transition={{ duration: 0.6, delay: 0.5 }}
             className="mt-8 flex flex-col items-stretch gap-3 min-[375px]:flex-row min-[375px]:flex-wrap min-[375px]:items-center min-[375px]:gap-4"
           >
-            <button
+            <MagneticButton
               onClick={onShopNow}
-              className="group flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 py-3.5 text-base font-semibold text-gray-950 transition-all hover:bg-emerald-400 active:scale-95 sm:px-8 sm:py-4"
+              className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-emerald-500 px-6 py-3.5 text-base font-semibold text-gray-950 transition-all hover:bg-emerald-400 active:scale-95 after:absolute after:inset-y-0 after:-left-1/2 after:w-1/3 after:skew-x-[-20deg] after:bg-white/40 after:transition-transform after:duration-700 hover:after:translate-x-[420%] sm:px-8 sm:py-4"
             >
               Shop Now
               <ArrowRight
                 size={20}
                 className="transition-transform group-hover:translate-x-1"
               />
-            </button>
+            </MagneticButton>
             <button
               onClick={onShopNow}
               className="rounded-full border border-white/20 px-6 py-3.5 text-center text-base font-medium text-white transition hover:bg-white/10 sm:px-8 sm:py-4"
@@ -151,6 +158,7 @@ export default function Hero({ heroImage, videoUrl, iframeUrl, posterUrl, second
           </motion.div>
         </div>
       </div>
+     
       {hasSecondSlide && (
         <>
           {/* Navigation Arrows */}

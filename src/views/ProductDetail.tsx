@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ShoppingBag, Check, Truck, ShieldCheck, RefreshCw, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Check, Truck, ShieldCheck, RefreshCw, Minus, Plus, Star } from 'lucide-react';
 import type { Product } from '@/types';
 import { Rating } from '@/components/Rating';
 import { ProductCard } from '@/components/ProductCard';
+import { motion } from 'framer-motion';
+
+interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
 
 interface ProductDetailProps {
   product: Product;
@@ -17,6 +26,11 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newReview, setNewReview] = useState({ name: '', rating: 5, comment: '' });
+  const [reviewError, setReviewError] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const productImages = [product.image_url, product.hover_image_url].filter((image): image is string => Boolean(image));
   const [selectedImage, setSelectedImage] = useState(product.image_url);
 
@@ -33,6 +47,53 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
       })
       .catch(() => setRelatedProducts([]));
   }, [product.id]);
+
+  // Fetch reviews
+  useEffect(() => {
+    // Load reviews from localStorage for this product
+    const storedReviews = localStorage.getItem(`reviews-${product.id}`);
+    if (storedReviews) {
+      setReviews(JSON.parse(storedReviews));
+    }
+  }, [product.id]);
+
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    setReviewError('');
+
+    if (!newReview.name.trim() || !newReview.comment.trim()) {
+      setReviewError('Please fill in all fields');
+      return;
+    }
+
+    if (newReview.comment.trim().length < 10) {
+      setReviewError('Review must be at least 10 characters');
+      return;
+    }
+
+    setIsSubmittingReview(true);
+
+    const review: Review = {
+      id: Date.now().toString(),
+      name: newReview.name.trim(),
+      rating: newReview.rating,
+      comment: newReview.comment.trim(),
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    };
+
+    const updatedReviews = [review, ...reviews];
+    setReviews(updatedReviews);
+    localStorage.setItem(`reviews-${product.id}`, JSON.stringify(updatedReviews));
+
+    // Reset form
+    setNewReview({ name: '', rating: 5, comment: '' });
+    setShowReviewForm(false);
+    setIsSubmittingReview(false);
+  };
+
+  const averageRating = reviews.length > 0 
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length 
+    : product.rating;
 
   const handleAddToCart = async () => {
     if (!selectedSize) {
@@ -207,6 +268,179 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
             </div>
           </div>
         </div>
+
+        {/* Customer Reviews Section */}
+        <section className="mt-16 border-t border-gray-100 pt-12" aria-labelledby="reviews-heading">
+          <div className="mb-8">
+            <h2 id="reviews-heading" className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">
+              Customer Reviews
+            </h2>
+            <div className="mt-4 flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Rating rating={averageRating} />
+                <span className="text-lg font-bold text-gray-900">{averageRating.toFixed(1)}</span>
+              </div>
+              <span className="text-sm text-gray-600">
+                Based on {reviews.length + product.reviews_count} reviews
+              </span>
+            </div>
+          </div>
+
+          {/* Add Review Button */}
+          {!showReviewForm && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowReviewForm(true)}
+              className="mb-8 flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700"
+            >
+              <Star size={18} />
+              Write a Review
+            </motion.button>
+          )}
+
+          {/* Review Form */}
+          {showReviewForm && (
+            <motion.form
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              onSubmit={handleSubmitReview}
+              className="mb-8 rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 p-6"
+            >
+              <h3 className="mb-4 text-xl font-bold text-gray-900">Write Your Review</h3>
+              
+              {/* Star Rating Selection */}
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Your Rating *
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReview({ ...newReview, rating: star })}
+                      className="transition hover:scale-110"
+                    >
+                      <Star
+                        size={32}
+                        className={`${
+                          star <= newReview.rating
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'fill-gray-200 text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 self-center text-sm font-semibold text-gray-700">
+                    {newReview.rating} {newReview.rating === 1 ? 'star' : 'stars'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Name Input */}
+              <div className="mb-4">
+                <label htmlFor="review-name" className="mb-2 block text-sm font-semibold text-gray-700">
+                  Your Name *
+                </label>
+                <input
+                  id="review-name"
+                  type="text"
+                  value={newReview.name}
+                  onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                  placeholder="John Doe"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  required
+                />
+              </div>
+
+              {/* Comment Input */}
+              <div className="mb-4">
+                <label htmlFor="review-comment" className="mb-2 block text-sm font-semibold text-gray-700">
+                  Your Review *
+                </label>
+                <textarea
+                  id="review-comment"
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  placeholder="Share your experience with this product..."
+                  rows={4}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-500">Minimum 10 characters</p>
+              </div>
+
+              {reviewError && (
+                <p className="mb-4 text-sm font-semibold text-red-600">{reviewError}</p>
+              )}
+
+              {/* Form Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  className="flex-1 rounded-full bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowReviewForm(false);
+                    setReviewError('');
+                    setNewReview({ name: '', rating: 5, comment: '' });
+                  }}
+                  className="rounded-full border-2 border-gray-300 px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.form>
+          )}
+
+          {/* Reviews List */}
+          <div className="space-y-6">
+            {reviews.length === 0 ? (
+              <div className="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
+                <Star size={48} className="mx-auto mb-4 text-gray-300" />
+                <p className="text-lg font-semibold text-gray-900">No reviews yet</p>
+                <p className="mt-1 text-sm text-gray-600">Be the first to review this product!</p>
+              </div>
+            ) : (
+              reviews.map((review, index) => (
+                <motion.div
+                  key={review.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                >
+                  <div className="mb-3 flex items-start justify-between">
+                    <div>
+                      <h4 className="font-bold text-gray-900">{review.name}</h4>
+                      <p className="text-sm text-gray-500">{review.date}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={16}
+                          className={`${
+                            star <= review.rating
+                              ? 'fill-amber-400 text-amber-400'
+                              : 'fill-gray-200 text-gray-200'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm leading-relaxed text-gray-700">{review.comment}</p>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </section>
 
         <section className="mt-20 border-t border-gray-100 pt-12" aria-labelledby="related-products-heading">
           <div className="mb-8 flex items-end justify-between gap-4">

@@ -35,7 +35,7 @@ export default function StreetStyleGallery({ onShopNow }: StreetStyleGalleryProp
             const isActive = activeLook === index;
 
             return (
-            <article key={look.title} onMouseEnter={() => setActiveLook(index)} onFocus={() => setActiveLook(index)} onClick={() => setActiveLook(index)} className={`group relative min-w-[82vw] snap-center flex-none overflow-hidden rounded-sm bg-slate-900 transition-[flex] duration-500 ease-out sm:min-w-0 sm:flex-1 ${isActive ? 'sm:flex-[3.3]' : 'sm:flex-1'}`}>
+            <article key={look.title} onMouseEnter={() => setActiveLook(index)} onFocus={() => setActiveLook(index)} onClick={() => setActiveLook(index)} className={`group relative min-w-[82vw] snap-center flex-none overflow-hidden rounded-sm bg-slate-900 transition-[flex,transform] duration-500 ease-out [perspective:1000px] sm:min-w-0 sm:flex-1 ${isActive ? 'sm:flex-[3.3] sm:scale-[1.02]' : 'sm:flex-1 sm:[transform:rotateY(-5deg)]'}`}>
               <Image src={look.image} alt={`${look.title} football shirt fit`} fill sizes="(max-width: 640px) 150px, (max-width: 1024px) 25vw, 48vw" className="object-cover transition duration-700 ease-out group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/5 transition group-hover:from-black/75" />
               <div className={`absolute left-5 top-1/2 -translate-y-1/2 transition-opacity duration-300 ${isActive ? 'opacity-0' : 'opacity-100'}`}>

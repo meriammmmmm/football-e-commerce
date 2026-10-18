@@ -16,10 +16,10 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ y: -8 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -8, rotateX: 2, rotateY: -2, scale: 1.01 }}
       onClick={() => onSelect(product)}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/60"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white text-left [perspective:1200px] [transform-style:preserve-3d] animate-[depthPulse_8s_ease-in-out_infinite] transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-950/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-400/30"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
         <img
