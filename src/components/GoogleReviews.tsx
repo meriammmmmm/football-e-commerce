@@ -58,6 +58,13 @@ const reviews: Review[] = [
   },
 ];
 
+const extraHighlights = [
+  { copy: "Amazing collection of retro shirts. Found the exact 1998 France jersey I wanted!", name: "Sophie Laurent" },
+  { copy: "Best vintage football store in Barcelona. The staff really knows their stuff.", name: "James Mitchell" },
+  { copy: "Authentic quality. Every jersey has a story. Highly recommend!", name: "Carlos Ruiz" },
+  { copy: "Incredible selection of rare jerseys. The passion here is real!", name: "Emma Wilson" },
+];
+
 const StarRow = ({ rating = 5 }: { rating?: number }) => (
   <div className="flex items-center gap-0.5 text-[#ffb35c]" aria-label="5 out of 5 stars">
     {Array.from({ length: 5 }, (_, index) => <Star key={index} size={14} fill={index < rating ? 'currentColor' : 'none'} />)}
@@ -149,9 +156,101 @@ export default function GoogleReviews() {
             <button type="button" onClick={goForward} disabled={!canGoForward} aria-label="Next reviews" className="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-white disabled:opacity-30"><ChevronRight size={16} /></button>
           </div>
         </div>
-        <div className="mt-6 space-y-3 overflow-hidden opacity-70" aria-label="Customer review highlights">
-          <Marquee>{reviews.map((review) => <div key={`marquee-a-${review.name}`} className="w-64 shrink-0 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-xs text-slate-200">“{review.copy}” <span className="mt-2 block text-emerald-300">— {review.name}</span></div>)}</Marquee>
-          <Marquee reverse>{reviews.map((review) => <div key={`marquee-b-${review.name}`} className="w-64 shrink-0 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-xs text-slate-200">★★★★★ <span className="ml-2 text-slate-400">{review.age}</span></div>)}</Marquee>
+        <div className="mt-6 overflow-hidden opacity-80" aria-label="Trust badges">
+          <Marquee>
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">100% Authentic</h3>
+                <p className="text-xs text-slate-400">Verified vintage</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Best Quality</h3>
+                <p className="text-xs text-slate-400">Hand-picked gems</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M6 3h12l4 6-10 13L2 9Z"/>
+                  <path d="M11 3 8 9l4 13 4-13-3-6"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Rare Finds</h3>
+                <p className="text-xs text-slate-400">Unique collection</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <rect width="20" height="14" x="2" y="5" rx="2"/>
+                  <line x1="2" x2="22" y1="10" y2="10"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Secure Payment</h3>
+                <p className="text-xs text-slate-400">Safe checkout</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M16 3h5v5"/>
+                  <path d="M8 3H3v5"/>
+                  <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/>
+                  <path d="m15 9 6-6"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Fast Shipping</h3>
+                <p className="text-xs text-slate-400">Worldwide</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
+                  <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+                  <path d="M12 3v6"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Easy Returns</h3>
+                <p className="text-xs text-slate-400">30 days</p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M12 2v20M2 12h20"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Expert Curated</h3>
+                <p className="text-xs text-slate-400">Passionate team</p>
+              </div>
+            </div>
+          </Marquee>
         </div>
       </div>
       {formOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020611]/75 p-4 backdrop-blur-sm" onClick={() => setFormOpen(false)}><form onSubmit={submitReview} onClick={(event) => event.stopPropagation()} className="w-full max-w-lg rounded-3xl bg-[#f4f0e7] p-6 text-[#11192d] shadow-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Headbutt Barcelona</p><h2 className="mt-2 text-3xl font-black tracking-[-0.05em]">Share your review</h2></div><button type="button" onClick={() => setFormOpen(false)} aria-label="Close review form" className="grid h-11 w-11 place-items-center rounded-full bg-[#11192d]/10"><X size={22} /></button></div><p className="mt-3 text-sm text-[#11192d]/60">Your feedback helps the Headbutt community find its next great shirt.</p><input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} required placeholder="Your name" className="mt-6 h-12 w-full rounded-xl border border-[#11192d]/15 bg-white px-4 font-semibold outline-none focus:border-emerald-600" /><div className="mt-4"><p className="text-sm font-black">Your rating</p><div className="mt-2 flex gap-1">{Array.from({ length: 5 }, (_, index) => <button key={index} type="button" onClick={() => setForm((current) => ({ ...current, rating: index + 1 }))} aria-label={`${index + 1} stars`} className="text-[#ffb35c]"><Star size={27} fill={index < form.rating ? 'currentColor' : 'none'} /></button>)}</div></div><textarea value={form.copy} onChange={(event) => setForm((current) => ({ ...current, copy: event.target.value }))} required minLength={10} rows={4} placeholder="Tell us about your visit or your shirt…" className="mt-4 w-full resize-none rounded-xl border border-[#11192d]/15 bg-white p-4 font-semibold outline-none focus:border-emerald-600" />{formError && <p role="alert" className="mt-3 text-sm font-bold text-red-700">{formError}</p>}<button disabled={isSubmitting} type="submit" className="mt-5 w-full rounded-xl bg-emerald-500 py-4 font-black text-[#081120] transition hover:bg-emerald-400 disabled:opacity-60">{isSubmitting ? 'Sending…' : 'Submit review'}</button><p className="mt-3 text-center text-xs font-semibold text-[#11192d]/45">For a public Google review, use the Google review button.</p></form></div>}

@@ -7,7 +7,8 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 border-t border-gray-800 py-12">
       <div className="container mx-auto px-6">
-        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-4">
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3 relative">
+          <div aria-hidden="true" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden text-[clamp(4rem,16vw,14rem)] font-black leading-[0.72] tracking-[-0.1em] text-white/[0.04] select-none pointer-events-none whitespace-nowrap">HEADBUTT</div>
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10 overflow-hidden rounded bg-emerald-600">
@@ -15,10 +16,25 @@ export default function Footer() {
               </div>
               <span className="text-lg font-bold text-white">HEADBUTT</span>
             </div>
-            <p className="text-gray-400 text-sm">The world&apos;s leading destination for classic and vintage football shirts.</p>
-            <a href={MAPS_URL} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 transition hover:text-emerald-300">
-              <MapPin size={16} /> Visit us in Barcelona
-            </a>
+            <p className="text-gray-400 text-sm mb-4">The world&apos;s leading destination for classic and vintage football shirts.</p>
+            <div className="flex flex-col gap-2">
+              <a href={MAPS_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 transition-all hover:text-emerald-300 hover:gap-3">
+                <MapPin size={16} /> Visit us in Barcelona
+              </a>
+              <a 
+                href="https://www.instagram.com/headbuttbarcelona/" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 transition-all hover:text-emerald-300 hover:gap-3"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
+                @headbuttbarcelona
+              </a>
+            </div>
           </div>
           <div>
             <h4 className="font-bold mb-4 text-sm text-white">SHOP</h4>
@@ -38,17 +54,7 @@ export default function Footer() {
               <li><a href="#" className="hover:text-white transition">Size Guide</a></li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-bold mb-4 text-sm text-white">ABOUT</h4>
-            <ul className="space-y-2 text-gray-400 text-sm">
-              <li><a href="#" className="hover:text-white transition">Our Story</a></li>
-              <li><a href="#" className="hover:text-white transition">Careers</a></li>
-              <li><a href="#" className="hover:text-white transition">Press</a></li>
-              <li><a href="#" className="hover:text-white transition">Sustainability</a></li>
-            </ul>
-          </div>
         </div>
-        <div aria-hidden="true" className="mb-8 overflow-hidden text-[clamp(4rem,16vw,14rem)] font-black leading-[0.72] tracking-[-0.1em] text-white/[0.04] select-none">HEADBUTT</div>
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
           <p>© 2026 Headbutt Barcelona. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">

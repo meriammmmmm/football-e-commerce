@@ -9,6 +9,13 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (reducedMotion) return;
 
     const lenis = new Lenis({ lerp: 0.1, autoRaf: false });
+    const syncOverlayState = () => {
+      if (document.body.dataset.searchOverlay === 'true') lenis.stop();
+      else lenis.start();
+    };
+    const overlayObserver = new MutationObserver(syncOverlayState);
+    overlayObserver.observe(document.body, { attributes: true, attributeFilter: ['data-search-overlay'] });
+    syncOverlayState();
     let frame = 0;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -18,6 +25,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     frame = window.requestAnimationFrame(raf);
     return () => {
       window.cancelAnimationFrame(frame);
+      overlayObserver.disconnect();
       lenis.destroy();
     };
   }, []);

@@ -50,10 +50,17 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
 
   // Fetch reviews
   useEffect(() => {
+    // Reset reviews state first
+    setReviews([]);
     // Load reviews from localStorage for this product
     const storedReviews = localStorage.getItem(`reviews-${product.id}`);
     if (storedReviews) {
-      setReviews(JSON.parse(storedReviews));
+      try {
+        setReviews(JSON.parse(storedReviews));
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        setReviews([]);
+      }
     }
   }, [product.id]);
 
@@ -61,13 +68,13 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
     e.preventDefault();
     setReviewError('');
 
-    if (!newReview.name.trim() || !newReview.comment.trim()) {
-      setReviewError('Please fill in all fields');
+    if (!newReview.name.trim()) {
+      setReviewError('Please enter your name');
       return;
     }
 
-    if (newReview.comment.trim().length < 10) {
-      setReviewError('Review must be at least 10 characters');
+    if (newReview.comment.trim() && newReview.comment.trim().length < 10) {
+      setReviewError('Review must be at least 10 characters if provided');
       return;
     }
 
@@ -77,7 +84,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
       id: Date.now().toString(),
       name: newReview.name.trim(),
       rating: newReview.rating,
-      comment: newReview.comment.trim(),
+      comment: newReview.comment.trim() || `Rated ${newReview.rating} stars`,
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
     };
 
@@ -93,7 +100,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
 
   const averageRating = reviews.length > 0 
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length 
-    : product.rating;
+    : (product.rating || 0);
 
   const handleAddToCart = async () => {
     if (!selectedSize) {
@@ -160,10 +167,12 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
             </h1>
 
             <div className="mt-4 flex items-center gap-2">
-              <Rating rating={product.rating} />
-              <span className="text-sm text-gray-600">
-                ({product.reviews_count} reviews)
-              </span>
+              <Rating rating={averageRating} />
+              {reviews.length > 0 && (
+                <span className="text-sm text-gray-600">
+                  {averageRating} · {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                </span>
+              )}
             </div>
 
             <p className="mt-6 text-3xl font-bold text-gray-900">
@@ -278,10 +287,10 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
             <div className="mt-4 flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Rating rating={averageRating} />
-                <span className="text-lg font-bold text-gray-900">{averageRating.toFixed(1)}</span>
+                <span className="text-lg font-bold text-gray-900">{(averageRating || 0).toFixed(1)}</span>
               </div>
               <span className="text-sm text-gray-600">
-                Based on {reviews.length + product.reviews_count} reviews
+                Based on {reviews.length + (product.reviews_count || 0)} reviews
               </span>
             </div>
           </div>
@@ -314,25 +323,14 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
                 <label className="mb-2 block text-sm font-semibold text-gray-700">
                   Your Rating *
                 </label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setNewReview({ ...newReview, rating: star })}
-                      className="transition hover:scale-110"
-                    >
-                      <Star
-                        size={32}
-                        className={`${
-                          star <= newReview.rating
-                            ? 'fill-amber-400 text-amber-400'
-                            : 'fill-gray-200 text-gray-300'
-                        }`}
-                      />
-                    </button>
-                  ))}
-                  <span className="ml-2 self-center text-sm font-semibold text-gray-700">
+                <div className="flex items-center gap-3">
+                  <Rating 
+                    rating={newReview.rating} 
+                    interactive={true}
+                    onRate={(rating) => setNewReview({ ...newReview, rating })}
+                    size={32}
+                  />
+                  <span className="text-sm font-semibold text-gray-700">
                     {newReview.rating} {newReview.rating === 1 ? 'star' : 'stars'}
                   </span>
                 </div>
@@ -357,7 +355,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
               {/* Comment Input */}
               <div className="mb-4">
                 <label htmlFor="review-comment" className="mb-2 block text-sm font-semibold text-gray-700">
-                  Your Review *
+                  Your Review (Optional)
                 </label>
                 <textarea
                   id="review-comment"
@@ -366,9 +364,8 @@ export function ProductDetail({ product, onBack, onAddToCart, onSelectProduct }:
                   placeholder="Share your experience with this product..."
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                  required
                 />
-                <p className="mt-1 text-xs text-gray-500">Minimum 10 characters</p>
+                <p className="mt-1 text-xs text-gray-500">Tell us about your experience</p>
               </div>
 
               {reviewError && (

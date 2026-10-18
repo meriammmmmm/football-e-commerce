@@ -63,7 +63,9 @@ export default function SearchOverlay({ open, initialQuery = '', onClose, onSear
 
   useEffect(() => {
     if (!open) return;
+    document.body.dataset.searchOverlay = 'true';
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onCloseRef.current();
       if (event.key !== 'Tab' || !overlayRef.current) return;
@@ -75,7 +77,12 @@ export default function SearchOverlay({ open, initialQuery = '', onClose, onSear
     };
     window.addEventListener('keydown', handleKeyDown);
     void fetch('/api/products').then((response) => response.ok ? response.json() : []).then((data) => setProducts(Array.isArray(data) ? data : data.products || [])).catch(() => setProducts([]));
-    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', handleKeyDown); };
+    return () => {
+      delete document.body.dataset.searchOverlay;
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   // The overlay owns its input state; rerunning this effect on every keystroke would reset it.
   }, [open]);
 
@@ -96,15 +103,27 @@ export default function SearchOverlay({ open, initialQuery = '', onClose, onSear
   if (!open) return null;
 
   return (
-    <div ref={overlayRef} style={{ '--so-surface': 'rgba(255,255,255,.08)', '--so-border': 'rgba(255,255,255,.15)', '--so-hover': 'rgba(255,255,255,.12)', '--so-panel': '#22304f', '--so-mint': '#3ecf8e', backgroundImage: 'radial-gradient(circle at 92% 8%, rgba(62,207,142,.12), transparent 32%), radial-gradient(circle at 8% 90%, rgba(79,124,255,.10), transparent 36%), linear-gradient(180deg, #1a2540 0%, #111a2e 100%)' } as React.CSSProperties} className="search-overlay fixed inset-0 z-[9999] isolate overflow-y-auto text-white animate-[searchFadeIn_220ms_ease-out]" role="dialog" aria-modal="true" aria-label="Search Headbutt">
+    <div
+      ref={overlayRef}
+      onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
+      onWheel={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+      style={{ '--so-surface': 'rgba(255,255,255,.08)', '--so-border': 'rgba(255,255,255,.15)', '--so-hover': 'rgba(255,255,255,.12)', '--so-panel': '#22304f', '--so-mint': '#3ecf8e', backgroundImage: 'radial-gradient(circle at 92% 8%, rgba(62,207,142,.12), transparent 32%), radial-gradient(circle at 8% 90%, rgba(79,124,255,.10), transparent 36%), linear-gradient(180deg, #1a2540 0%, #111a2e 100%)' } as React.CSSProperties}
+      className="search-overlay fixed inset-0 z-[9999] isolate overscroll-contain overflow-y-auto text-white animate-[searchFadeIn_220ms_ease-out]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search Headbutt"
+    >
       <div className="relative mx-auto min-h-full max-w-6xl px-6 pb-16 pt-5 sm:pt-8">
         <div className="flex items-center justify-between animate-[searchDropIn_420ms_cubic-bezier(0.16,1,0.3,1)]">
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-emerald-300"><Sparkles size={15} /> Find your shirt</div>
-          <button type="button" onClick={onClose} aria-label="Close search" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white transition hover:border-emerald-300 hover:bg-white/10"><X size={21} /></button>
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-emerald-300 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20"><Sparkles size={15} className="animate-pulse" /> Find your shirt</div>
+          <button type="button" onClick={onClose} aria-label="Close search" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white transition hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110"><X size={21} /></button>
         </div>
 
         <div className="mt-6 pb-2 sm:mt-8">
-          <h1 className="mb-8 text-5xl font-black tracking-[-.05em] text-white md:text-6xl">Find your shirt</h1>
+          <h1 className="mb-8 text-5xl font-black tracking-[-.05em] bg-gradient-to-r from-white via-emerald-200 to-white bg-clip-text text-transparent md:text-6xl animate-[searchDropIn_500ms_cubic-bezier(0.16,1,0.3,1)]">Find your shirt</h1>
           <SearchBar query={query} products={products} onChange={handleQueryChange} onSubmit={submit} onPick={choose} onSuggestionsChange={setSuggestionsOpen} />
         </div>
 
@@ -112,11 +131,11 @@ export default function SearchOverlay({ open, initialQuery = '', onClose, onSear
         {normalizedQuery ? (
           <section className="mt-8" aria-live="polite">
             <div className="flex items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Search results</p><h2 className="mt-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">{results.length ? `${results.length} shirts for “${query}”` : `No shirts for “${query}”`}</h2></div>{results.length > 0 && <button type="button" onClick={() => { onSearch(query); onClose(); }} className="hidden items-center gap-1 text-sm font-bold text-emerald-300 sm:flex">View all <ArrowUpRight size={16} /></button>}</div>
-            {results.length ? <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{results.map((product, index) => <button key={product.id} type="button" onClick={() => { onSelectProduct(product); onClose(); }} style={{ animationDelay: `${index * 55}ms` }} className="group flex animate-[searchRiseIn_420ms_cubic-bezier(0.16,1,0.3,1)_both] items-center gap-3 rounded-2xl border border-[var(--so-border)] bg-[var(--so-surface)] p-3 text-left transition hover:-translate-y-0.5 hover:border-emerald-300/60 hover:bg-[var(--so-hover)]"><div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#0b1220]"><Image src={product.image_url} alt="" fill sizes="64px" className="object-cover transition duration-500 group-hover:scale-105" /></div><span className="min-w-0"><span className="block truncate text-xs font-black uppercase tracking-wider text-emerald-300">{product.team}</span><span className="mt-1 block line-clamp-2 text-sm font-bold leading-snug text-white">{product.name}</span><span className="mt-2 block text-sm font-black text-white">€{product.price.toFixed(2)}</span></span><ChevronRight className="ml-auto shrink-0 text-white/50 transition group-hover:translate-x-1 group-hover:text-emerald-300" size={18} /></button>)}</div> : <div className="mt-5 rounded-2xl border border-dashed border-[var(--so-border)] bg-[var(--so-surface)] p-8 text-center animate-[searchRiseIn_350ms_ease-out_both]"><p className="font-bold text-white">Nothing found yet.</p><p className="mt-1 text-white/70">Try a player, club or category.</p></div>}
+            {results.length ? <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{results.map((product, index) => <button key={product.id} type="button" onClick={() => { onSelectProduct(product); onClose(); }} style={{ animationDelay: `${index * 55}ms` }} className="group flex animate-[searchRiseIn_420ms_cubic-bezier(0.16,1,0.3,1)_both] items-center gap-3 rounded-2xl border border-[var(--so-border)] bg-[var(--so-surface)] p-3 text-left transition hover:-translate-y-1 hover:border-emerald-400/60 hover:bg-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20"><div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#0b1220] ring-1 ring-white/5"><Image src={product.image_url} alt="" fill sizes="64px" className="object-cover transition duration-500 group-hover:scale-110" /></div><span className="min-w-0"><span className="block truncate text-xs font-black uppercase tracking-wider text-emerald-400">{product.team}</span><span className="mt-1 block line-clamp-2 text-sm font-bold leading-snug text-white">{product.name}</span><span className="mt-2 block text-sm font-black bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">€{product.price.toFixed(2)}</span></span><ChevronRight className="ml-auto shrink-0 text-white/50 transition group-hover:translate-x-1 group-hover:text-emerald-400" size={18} /></button>)}</div> : <div className="mt-5 rounded-2xl border border-dashed border-emerald-500/30 bg-emerald-500/5 p-8 text-center animate-[searchRiseIn_350ms_ease-out_both]"><p className="font-bold text-white">Nothing found yet.</p><p className="mt-1 text-emerald-200/70">Try a player, club or category.</p></div>}
           </section>
         ) : (
           <div className="mt-8">
-            <section aria-labelledby="browse-leagues-heading"><div className="flex items-end justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.18em] text-emerald-300">Explore the collection</p><h2 id="browse-leagues-heading" className="mt-2 text-lg font-black text-white sm:text-xl">Browse by league</h2><p className="mt-1 text-sm font-semibold text-white/70">Choose a league to see its teams</p></div><span className="text-xs font-bold text-white/70">{(leagues.length ? leagues : fallbackLeagues).length} leagues</span></div><div className="mt-4 grid gap-4 sm:grid-cols-2">{(leagues.length ? leagues : fallbackLeagues).map((league) => <LeagueCard key={league} league={league} teamCount={(leagueTeams[league] ?? []).length} expanded={expandedLeague === league} onToggle={() => toggleLeague(league)}><div className="grid max-h-[min(65vh,720px)] animate-[searchRiseIn_280ms_ease-out_both] grid-cols-1 gap-2 overflow-y-auto p-3 sm:grid-cols-2">{(leagueTeams[league] ?? []).map((team, index) => <button key={team} type="button" onClick={() => choose(team)} style={{ animationDelay: `${Math.min(index, 24) * 18}ms` }} className="flex animate-[searchRiseIn_260ms_ease-out_both] min-h-12 items-center gap-3 rounded-lg border border-[var(--so-border)] bg-[var(--so-surface)] px-3 py-3 text-left text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--so-hover)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300"><span aria-hidden="true" className="grid h-6 w-7 shrink-0 place-items-center rounded-md bg-emerald-50 text-base shadow-sm">{league === 'International' ? getCountryFlag(team) : <span className="h-3.5 w-5 rounded-[2px] shadow-sm" style={{ background: getTeamFlagColor(league, team) }} />}</span>{team}</button>)}</div></LeagueCard>)}</div></section>
+            <section aria-labelledby="browse-leagues-heading"><div className="flex items-end justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.18em] text-emerald-400 bg-emerald-500/10 inline-block px-3 py-1 rounded-full border border-emerald-500/20">Explore the collection</p><h2 id="browse-leagues-heading" className="mt-3 text-lg font-black text-white sm:text-xl">Browse by league</h2><p className="mt-1 text-sm font-semibold text-emerald-100/70">Choose a league to see its teams</p></div><span className="text-xs font-bold text-emerald-300/70 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">{(leagues.length ? leagues : fallbackLeagues).length} leagues</span></div><div className="mt-4 grid gap-4 sm:grid-cols-2">{(leagues.length ? leagues : fallbackLeagues).map((league) => <LeagueCard key={league} league={league} teamCount={(leagueTeams[league] ?? []).length} expanded={expandedLeague === league} onToggle={() => toggleLeague(league)}><div className="grid max-h-[min(65vh,720px)] animate-[searchRiseIn_280ms_ease-out_both] grid-cols-1 gap-2 overflow-y-auto p-3 sm:grid-cols-2">{(leagueTeams[league] ?? []).map((team, index) => <button key={team} type="button" onClick={() => choose(team)} style={{ animationDelay: `${Math.min(index, 24) * 18}ms` }} className="flex animate-[searchRiseIn_260ms_ease-out_both] min-h-12 items-center gap-3 rounded-lg border border-[var(--so-border)] bg-[var(--so-surface)] px-3 py-3 text-left text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--so-hover)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300"><span aria-hidden="true" className="grid h-6 w-7 shrink-0 place-items-center rounded-md bg-emerald-50 text-base shadow-sm">{league === 'International' ? getCountryFlag(team) : <span className="h-3.5 w-5 rounded-[2px] shadow-sm" style={{ background: getTeamFlagColor(league, team) }} />}</span>{team}</button>)}</div></LeagueCard>)}</div></section>
             <PlayerCarousel players={players} onPick={choose} />
           </div>
         )}

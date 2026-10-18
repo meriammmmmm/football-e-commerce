@@ -35,6 +35,7 @@ export default function Header({ onNavigate, currentPage, onSearch, onSelectProd
     if (!header) return;
     let previousY = window.scrollY;
     const updateHeader = () => {
+      if (document.body.dataset.searchOverlay === 'true') return;
       const currentY = window.scrollY;
       header.classList.toggle('header-scrolled', currentY > 80);
       header.classList.toggle('header-hidden', currentY > previousY + 8 && currentY > 140);

@@ -4,13 +4,37 @@ import { Star, ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 import { Rating } from './Rating';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 interface ProductCardProps {
   product: Product;
   onSelect: (product: Product) => void;
+  hideRating?: boolean;
 }
 
-export function ProductCard({ product, onSelect }: ProductCardProps) {
+export function ProductCard({ product, onSelect, hideRating = false }: ProductCardProps) {
+  const [reviewCount, setReviewCount] = useState(0);
+  const [averageRating, setAverageRating] = useState(product.rating);
+
+  useEffect(() => {
+    // Load review count and average rating from localStorage
+    const storedReviews = localStorage.getItem(`reviews-${product.id}`);
+    if (storedReviews) {
+      try {
+        const reviews = JSON.parse(storedReviews);
+        setReviewCount(reviews.length);
+        
+        if (reviews.length > 0) {
+          const avgRating = reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length;
+          setAverageRating(Number(avgRating.toFixed(1)));
+        }
+      } catch (error) {
+        setReviewCount(0);
+        setAverageRating(product.rating);
+      }
+    }
+  }, [product.id, product.rating]);
+
   return (
     <motion.button
       initial={{ opacity: 0, y: 20 }}
@@ -65,19 +89,27 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
           <span className="text-xs font-medium uppercase tracking-wide text-emerald-600">
             {product.league}
           </span>
-          <Rating rating={product.rating} />
+          {!hideRating && <Rating rating={averageRating} />}
         </div>
         <h3 className="text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-emerald-700 sm:text-base">
           {product.name}
         </h3>
-        <div className="mt-2 hidden items-center justify-between min-[375px]:flex">
-          <div className="flex items-center gap-1.5">
-            <Star size={14} className="fill-amber-400 text-amber-400" />
-            <span className="text-sm font-medium text-gray-600">
-              {product.rating} · {product.reviews_count} reviews
-            </span>
+        {!hideRating && (
+          <div className="mt-2 hidden items-center justify-between min-[375px]:flex">
+            <div className="flex items-center gap-1.5">
+              <Star size={14} className="fill-amber-400 text-amber-400" />
+              {reviewCount > 0 ? (
+                <span className="text-sm font-medium text-gray-600">
+                  {averageRating} · {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+                </span>
+              ) : (
+                <span className="text-sm font-medium text-gray-600">
+                  No reviews yet
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        )}
         <div className="mt-auto pt-3">
           <span className="text-base font-bold text-gray-900 sm:text-lg">
             €{product.price.toFixed(2)}

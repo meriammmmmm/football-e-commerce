@@ -44,7 +44,7 @@ export function HomePage({ onShopNow, onSelectProduct }: HomePageProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4 lg:gap-10">
-            {newArrivals.map((product) => <ProductCard key={product.id} product={product} onSelect={onSelectProduct} />)}
+            {newArrivals.map((product) => <ProductCard key={product.id} product={product} onSelect={onSelectProduct} hideRating={true} />)}
           </div>
         </div>
       </section>

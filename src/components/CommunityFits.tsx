@@ -1,7 +1,7 @@
 'use client';
 
 import { Heart, ShoppingBag } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
 interface CommunityFit {
@@ -139,24 +139,82 @@ export default function CommunityFits() {
         </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {fits.filter((fit) => activeFilter === 'ALL FITS' || fit.tag.includes(activeFilter.replace(' ', '')) || (activeFilter === 'NATIONAL' && fit.product_name.includes('Argentina'))).map((fit, index) => (
+        <motion.div 
+          layout
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {fits.filter((fit) => activeFilter === 'ALL FITS' || fit.tag.includes(activeFilter.replace(' ', '')) || (activeFilter === 'NATIONAL' && fit.product_name.includes('Argentina'))).length === 0 ? (
+            // Empty State
             <motion.div
-              key={fit.id}
-              layout
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.02, y: -5 }}
-              className="group relative overflow-hidden rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-emerald-500/30"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4 }}
+              className="col-span-full flex flex-col items-center justify-center py-20 px-4"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="mb-6 rounded-full bg-white/5 p-8 backdrop-blur-sm border border-white/10"
+              >
+                <ShoppingBag size={48} className="text-emerald-400" />
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-2xl font-bold text-white mb-2"
+              >
+                No fits found
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-gray-400 text-center max-w-md mb-6"
+              >
+                No community fits match this filter. Check out other categories or tag us on Instagram!
+              </motion.p>
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveFilter('ALL FITS')}
+                className="px-6 py-3 rounded-full bg-emerald-500 text-gray-950 font-semibold hover:bg-emerald-400 transition-colors"
+              >
+                View All Fits
+              </motion.button>
+            </motion.div>
+          ) : (
+            fits.filter((fit) => activeFilter === 'ALL FITS' || fit.tag.includes(activeFilter.replace(' ', '')) || (activeFilter === 'NATIONAL' && fit.product_name.includes('Argentina'))).map((fit, index) => (
+              <motion.div
+                key={fit.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.4,
+                  delay: index * 0.08,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                whileHover={{ scale: 1.03, y: -8 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative overflow-hidden rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/20"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img
+                <motion.img
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                   src={fit.image_url}
                   alt={fit.product_name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover"
                 />
                 
                 {/* Gradient Overlay */}
@@ -205,25 +263,29 @@ export default function CommunityFits() {
                   </div>
 
                   {/* CTA Button */}
-                  <button
+                  <motion.button
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
                     className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold uppercase tracking-wide transition-all ${
                       fit.cta_type === 'get_kit'
-                        ? 'bg-emerald-500 text-gray-950 hover:bg-emerald-400'
+                        ? 'bg-emerald-500 text-gray-950 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50'
                         : fit.cta_type === 'view'
-                        ? 'border border-white/30 bg-transparent text-emerald-400 hover:bg-emerald-500/10'
-                        : 'bg-emerald-500 text-gray-950 hover:bg-emerald-400'
+                        ? 'border border-white/30 bg-transparent text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/50'
+                        : 'bg-emerald-500 text-gray-950 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50'
                     }`}
                   >
                     {fit.cta_type === 'get_kit' && <ShoppingBag size={14} />}
                     {fit.cta_text}
                     {fit.cta_type === 'view' && <span className="ml-1">→</span>}
                     {fit.cta_type === 'shop' && <span className="ml-1">→</span>}
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
-          ))}
-        </div>
+          ))
+          )}
+        </motion.div>
       </div>
     </section>
   );
