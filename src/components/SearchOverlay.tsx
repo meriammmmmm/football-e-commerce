@@ -111,7 +111,7 @@ export default function SearchOverlay({ open, initialQuery = '', onClose, onSear
       onWheel={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
       style={{ '--so-surface': 'rgba(255,255,255,.08)', '--so-border': 'rgba(255,255,255,.15)', '--so-hover': 'rgba(255,255,255,.12)', '--so-panel': '#22304f', '--so-mint': '#3ecf8e', backgroundImage: 'radial-gradient(circle at 92% 8%, rgba(62,207,142,.12), transparent 32%), radial-gradient(circle at 8% 90%, rgba(79,124,255,.10), transparent 36%), linear-gradient(180deg, #1a2540 0%, #111a2e 100%)' } as React.CSSProperties}
-      className="search-overlay fixed inset-0 z-[9999] isolate overscroll-contain overflow-y-auto text-white animate-[searchFadeIn_220ms_ease-out]"
+      className="search-overlay fixed inset-0 z-[9999] isolate h-[100dvh] max-h-[100dvh] overscroll-contain overflow-y-auto text-white animate-[searchFadeIn_220ms_ease-out]"
       role="dialog"
       aria-modal="true"
       aria-label="Search Headbutt"

@@ -178,4 +178,9 @@ main > *:not(section) {
 .search-overlay {
   animation: searchFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(12px);
+  /* Keep the overlay independently scrollable on iOS/Android while the page
+     behind it remains locked. */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
