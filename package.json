@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "init-db": "tsx scripts/init-db.ts"
+    "init-db": "tsx scripts/init-db.ts",
+    "auth:google-business": "node scripts/google-business-auth.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

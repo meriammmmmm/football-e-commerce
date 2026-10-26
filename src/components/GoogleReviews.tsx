@@ -2,68 +2,153 @@
 
 import { ChevronLeft, ChevronRight, ExternalLink, Star, X } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Marquee from './Marquee';
 
 type Review = {
+  id?: string;
   name: string;
   initials: string;
   age: string;
   copy: string;
   rating?: number;
+  avatar?: string;
   photo?: string;
+  photos?: string[];
   avatarClass: string;
 };
 
 const reviews: Review[] = [
   {
-    name: 'Stefan Winkler',
-    initials: 'SW',
-    age: 'last month',
-    copy: 'Great and friendly store with a great selection of jerseys. My son was in heaven 😄',
-    photo: '/products/080B6C0F-BF0C-4050-A339-FD6CD3FB37A7.JPG',
+    name: 'Adriano Mladenovič',
+    initials: 'AM',
+    age: '2 months ago',
+    copy: 'An excellent shop for vintage football jerseys, with fantastic staff🔥🙌🏼',
+    photos: [
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLfGbBO5l_9XxB34Nex44o-IPCUlrZz0xFbu2tm2ojsfjLCLSrsTrXXgdUU635wd2TovYmFHcheTL4WAfiNEZ_PIN7611VcqcF5nuzbYbUG5e2K1wbKlOADLDLrqHyZaFiRH7W6I8Qq1rQY1=k-no',
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLe6QghtKekwmUhDGJi5j8543LHcLoFVnluI6HPoWwir-BdTNvVGIMiSAMEAFJpLz5IV67nObTGTc6MfkV4L6us6yh3WMiIy-kGCWD3BBtBuaK5-w_dLBZulSe5wdJHYjZKK8Ax2-APHjjKn=k-no',
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLd_8BRoCbPlfXhC6UZvl-Mt99zdMEbqG1bG_dWWjUtTbZMkAAmZFwwaWM8ymFb-MGI-TaAA_MFK96qOsQ7KAbpvI6NlCoG1BTEaKLD95vtr0mGw_cTRCid8xnF5Zb8HVCWDFr6yDtNP-Iq1=k-no',
+    ],
     avatarClass: 'bg-slate-700 text-slate-100',
   },
   {
-    name: 'Bijal Patel',
-    initials: 'BP',
-    age: '2 months ago',
-    copy: 'Nick was so helpful and patient! Got amazing Ronaldo jerseys in almost pristine condition.',
-    photo: '/products/0DB5904D-372D-4D8E-A2F9-3BFF07454CA6.JPG',
+    name: 'collin brown',
+    initials: 'CB',
+    age: 'Edited 3 months ago',
+    copy: "Hidden gem in the Gothic Quarter. Small shop packed with unique soccer kits. The owners' energy and enthusiasm make this a must-visit for families looking for a unique shopping experience and one-of-a-kind souvenir.",
+    photos: [
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLew5HlTiNnh5_sPWn7rAtt9qFE-0CCoQfwq8VXxtikfNAzQEyX4mv9pLXOvOsPL_6XGO1-U2rmKIBdeSKpZeIPBlYl0c9E1KhzsyoZ8jjPxpu8a4vN_m97kpj98wvswp9Hu7YJGKm_jLTWs=k-no',
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLdFFa3GHvCxRpwv__coqUhqja7pGIlRAnzEC0LdQskUeUD7UJpG6ruytFmL68jog7TO9g8QCKL7mU1a5whGMeYofrgW77umNWVrLYdh33GgPCzU7NK-T5Av5Y29aAEd5gVhP5mrenexVaD_=k-no',
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLdviAFaZE2BHiTYlsPeDF69Jql-L0CALeBv5Mx-7Re47ekUft0OiFbUWntG5Q4NRSAdLxaSg4WIrhRVdsjbt5UdOsWmW0q_we7FVes0po9aT7YG_GUBUhRBSuMMbTa5f4QbWtKCG-3CnEbF=k-no',
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLfF-nZRHPhJFwjNM44dbz4cpW8tkJNUgEq0jwOSvt8VXmGkkYx4cGoSJXg9O6bgiaBYOd4zmfT5rrKTB6Dw7AqytrbihETwyoaFIS4w_WF1wEDNUxyHg2QUNNSTe_ntVjsN9TTcKHWFeYPs=k-no',
+    ],
     avatarClass: 'bg-amber-500/20 text-amber-300',
   },
   {
-    name: 'Wojtek Puchta',
-    initials: 'WP',
-    age: '2 months ago',
-    copy: 'If you want to rizz up or just talk football, come through and say hello to the kick off vintage crew, they are amazing.',
-    photo: '/products/65CF9DBA-07AA-483A-9C96-58761782AE26.JPG',
+    name: 'HJW',
+    initials: 'HJ',
+    age: '3 months ago',
+    copy: 'Unreal football shop with amazing service would 100% recommend',
     avatarClass: 'bg-emerald-500/20 text-emerald-300',
   },
   {
-    name: 'Gustavo Quilantan Mustafa',
-    initials: 'GQ',
-    age: '2 days ago',
-    copy: 'Colección increíble! Jerseys en excelentes condiciones y hacen envíos internacionales. Seguro me verán de nuevo.',
-    photo: '/products/AFFE99A3-9EED-4E8E-B6A2-C6117759DBA5.JPG',
+    name: 'Nikita Koval (DJ Niksu)',
+    initials: 'NK',
+    age: 'a month ago',
+    copy: 'Great shop for original vintage kits!',
+    photo: 'https://lh3.googleusercontent.com/grass-cs/AABkmLd_vJEi57hbKGXU4CciTiGFBEmug0rMOjXAJ_THapLtw0r9QKG0y5a-w03-Zza-8hjZR69X7bIT5kSIDRZQHP7gaqoawwOUcJokT7gsrxzYpnQ8o1Eg9_Ffz4WTAW7TNDVZLfq0IrEIvis=k-no',
     avatarClass: 'bg-rose-500/20 text-rose-300',
   },
   {
-    name: 'Marcel Roca',
-    initials: 'MR',
-    age: 'a week ago',
-    copy: 'A proper treasure trove for football shirt lovers. The team know their history and helped me find the perfect Barça classic.',
-    photo: '/products/B8E00567-0DD3-4F13-99C8-7848DA0A0FE3.JPG',
+    name: 'Zain Anwar',
+    initials: 'ZA',
+    age: 'a month ago',
+    copy: 'Its a very good store. Its very aesthetic store also the stuff is original you should must visit this store',
     avatarClass: 'bg-violet-500/20 text-violet-300',
+  },
+  {
+    name: 'Vik De neys',
+    initials: 'VD',
+    age: 'a month ago',
+    copy: 'Amazing and chill guy. Also crazy good and beautiful vintage shirts',
+    avatarClass: 'bg-cyan-500/20 text-cyan-300',
+  },
+  {
+    name: 'Ko. Kasami',
+    initials: 'KK',
+    age: 'a month ago',
+    copy: 'Really good store👍 Great communication with the staff 😊',
+    avatarClass: 'bg-orange-500/20 text-orange-300',
+  },
+  {
+    name: 'Nozomi Tatsuzawa',
+    initials: 'NT',
+    age: '2 months ago',
+    copy: 'This is hands down the best place for vintage jerseys. They’ve got jerseys from all kinds of legends, including rare pieces you won’t find anywhere else. If you’re looking for a vintage jersey, this is the place to come',
+    photos: [
+      'https://lh3.googleusercontent.com/grass-cs/AABkmLeiQeXx2obnh9kgP1Rp9zpWchG32iaejeE6BHOzd2T1g8cbQU-n4rfQyqHA6H6IXQqMX4_Ci2Pufv0EXFrYPHiMrKAXfV75v9jkgXLm3GDuEHArgmcr1WxmEF7_9axYImLBEm92HpSfDRox=k-no',
+    ],
+    avatarClass: 'bg-fuchsia-500/20 text-fuchsia-300',
+  },
+  {
+    name: 'Henry',
+    initials: 'HE',
+    age: 'a month ago',
+    copy: 'Friendly owners and good prices. Has shirts from a lot of teams with good quality',
+    avatarClass: 'bg-blue-500/20 text-blue-300',
+  },
+  {
+    name: 'Lorenzo San Antonio',
+    initials: 'LS',
+    age: '2 months ago',
+    copy: 'really cool place, lots of really clean vintage jerseys and the guy there helped me to make my purchase',
+    avatarClass: 'bg-indigo-500/20 text-indigo-300',
+  },
+  {
+    name: 'roni tujula',
+    initials: 'RT',
+    age: 'a month ago',
+    copy: 'So nice owner and good shirts i would recommend',
+    avatarClass: 'bg-pink-500/20 text-pink-300',
+  },
+  {
+    name: '신채환',
+    initials: '신',
+    age: 'a month ago',
+    copy: 'Crazy good price and quality. Absolute hidden gem in bcn.',
+    avatarClass: 'bg-teal-500/20 text-teal-300',
+  },
+  {
+    name: 'Stephen Fulco',
+    initials: 'SF',
+    age: '2 months ago',
+    copy: 'Awesome shop with vintage national and club jerseys!',
+    avatarClass: 'bg-yellow-500/20 text-yellow-300',
+  },
+  {
+    name: '張太祐',
+    initials: '張',
+    age: '3 months ago',
+    copy: 'Here is the best football shop I’ve ever been to.',
+    avatarClass: 'bg-lime-500/20 text-lime-300',
+  },
+  {
+    name: 'Adam Issett',
+    initials: 'AI',
+    age: '2 months ago',
+    copy: 'Ali is a great guy with a great selection of vintage football shirts. Definitely worth a visit.',
+    avatarClass: 'bg-sky-500/20 text-sky-300',
+  },
+  {
+    name: 'Gallame',
+    initials: 'GA',
+    age: 'a month ago',
+    copy: 'Really cool. Nice jersey and old school one',
+    avatarClass: 'bg-purple-500/20 text-purple-300',
   },
 ];
 
-const extraHighlights = [
-  { copy: "Amazing collection of retro shirts. Found the exact 1998 France jersey I wanted!", name: "Sophie Laurent" },
-  { copy: "Best vintage football store in Barcelona. The staff really knows their stuff.", name: "James Mitchell" },
-  { copy: "Authentic quality. Every jersey has a story. Highly recommend!", name: "Carlos Ruiz" },
-  { copy: "Incredible selection of rare jerseys. The passion here is real!", name: "Emma Wilson" },
-];
+const googleReviewsUrl = 'https://www.google.com/maps/place/Headbutt+Barcelona+Vintage+Football+Store/@41.3812711,2.1748955,17z/data=!4m17!1m8!3m7!1s0x12a4a3cc4350d87b:0x438cad57a0ffff8e!2sHeadbutt+Barcelona+Vintage+Football+Store!8m2!3d41.3812711!4d2.1748955!10e1!16s%2Fg%2F11npqm4k_0!3m7!1s0x12a4a3cc4350d87b:0x438cad57a0ffff8e!8m2!3d41.3812711!4d2.1748955!9m1!1b1!16s%2Fg%2F11npqm4k_0?entry=ttu';
 
 const StarRow = ({ rating = 5 }: { rating?: number }) => (
   <div className="flex items-center gap-0.5 text-[#ffb35c]" aria-label="5 out of 5 stars">
@@ -71,21 +156,118 @@ const StarRow = ({ rating = 5 }: { rating?: number }) => (
   </div>
 );
 
+/** Reviewer photo when Google provides one, initials when it does not (or the image fails to load). */
+function ReviewAvatar({ review }: { review: Review }) {
+  const [failed, setFailed] = useState(false);
+  if (!review.avatar || failed) {
+    return (
+      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold ${review.avatarClass}`}>
+        {review.initials}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={review.avatar}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+      className="h-8 w-8 shrink-0 rounded-lg bg-slate-800 object-cover"
+    />
+  );
+}
+
+/** Photo the reviewer attached to the review, if any. */
+function ReviewPhoto({ src, onOpen }: { src: string; onOpen: () => void }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label="Open review photo"
+      className="group relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-slate-800 ring-1 ring-white/[0.08] transition hover:ring-emerald-300/70 focus:outline-none focus:ring-2 focus:ring-emerald-300 sm:h-11 sm:w-11"
+    >
+      <img
+        src={src}
+        alt="Review photo"
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        className="h-full w-full object-cover transition duration-200 group-hover:scale-110"
+      />
+      <span className="absolute inset-0 bg-black/0 transition group-hover:bg-black/20" />
+    </button>
+  );
+}
+
 export default function GoogleReviews() {
-  const [startIndex, setStartIndex] = useState(0);
+  const reviewsTrackRef = useRef<HTMLDivElement>(null);
+  const [googleReviews, setGoogleReviews] = useState<Review[] | null>(null);
+  const [googleReviewCount, setGoogleReviewCount] = useState(162);
+  const [googleRating, setGoogleRating] = useState(4.9);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [expandedReview, setExpandedReview] = useState<string | null>(null);
   const [submittedReviews, setSubmittedReviews] = useState<Review[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState({ name: '', rating: 5, copy: '' });
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const allReviews = [...submittedReviews, ...reviews];
-  const visibleReviews = allReviews.slice(startIndex, startIndex + 4);
-  const canGoBack = startIndex > 0;
-  const canGoForward = startIndex + 4 < allReviews.length;
-
-  const goBack = () => setStartIndex((current) => Math.max(0, current - 1));
-  const goForward = () => setStartIndex((current) => Math.min(allReviews.length - 4, current + 1));
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/google-reviews')
+      .then((response) => response.ok ? response.json() : null)
+      .then((data: { reviews?: Review[]; totalReviewCount?: number; averageRating?: number } | null) => {
+        if (cancelled || !data?.reviews?.length) return;
+        // Normalize both API versions and preserve any locally-known Google
+        // photos when an API response omits media for the same reviewer.
+        const liveReviews = data.reviews
+          .map((review) => {
+            const responseName = review.name?.trim() || '';
+            const fallback = reviews.find((candidate) => candidate.name.toLowerCase() === responseName.toLowerCase());
+            return {
+              ...fallback,
+              ...review,
+              name: responseName || fallback?.name || 'Google user',
+              initials: review.initials || fallback?.initials || 'GU',
+              age: review.age?.trim() || fallback?.age || 'Google review',
+              copy: review.copy?.trim() || fallback?.copy || 'No written comment.',
+              rating: review.rating || fallback?.rating || 5,
+              avatar: review.avatar || fallback?.avatar,
+              photo: review.photo || fallback?.photo,
+              photos: review.photos?.length ? review.photos : fallback?.photos,
+              avatarClass: review.avatarClass || fallback?.avatarClass || 'bg-slate-700 text-slate-100',
+            };
+          })
+          .filter((review, index, source) => source.findIndex((candidate) => candidate.name === review.name && candidate.copy === review.copy) === index);
+        setGoogleReviews(liveReviews);
+        if (data.totalReviewCount) setGoogleReviewCount(data.totalReviewCount);
+        if (typeof data.averageRating === 'number') setGoogleRating(data.averageRating);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedPhoto(null);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedPhoto]);
+  const allReviews = [...submittedReviews, ...(googleReviews ?? reviews)];
+  const reviewKey = (review: Review, index: number) => review.id ?? `${review.name}-${index}`;
+  const scrollReviews = (direction: 'back' | 'forward') => {
+    const track = reviewsTrackRef.current;
+    if (!track) return;
+    track.scrollBy({ left: (direction === 'forward' ? 1 : -1) * Math.max(track.clientWidth / 4, 280), behavior: 'smooth' });
+  };
   const submitReview = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setFormError(''); setIsSubmitting(true);
     try {
@@ -93,7 +275,7 @@ export default function GoogleReviews() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not submit your review.');
       setSubmittedReviews((current) => [{ name: data.review.name, initials: data.review.name.split(/\s+/).map((part: string) => part[0]).join('').slice(0, 2).toUpperCase(), age: 'just now', copy: data.review.copy, rating: data.review.rating, avatarClass: 'bg-emerald-500/20 text-emerald-300' }, ...current]);
-      setForm({ name: '', rating: 5, copy: '' }); setStartIndex(0); setFormOpen(false);
+      setForm({ name: '', rating: 5, copy: '' }); setFormOpen(false);
     } catch (error) { setFormError(error instanceof Error ? error.message : 'Could not submit your review.'); }
     finally { setIsSubmitting(false); }
   };
@@ -110,52 +292,96 @@ export default function GoogleReviews() {
               <div>
                 <h2 id="reviews-heading" className="text-base font-bold tracking-tight text-white sm:text-lg">Headbutt Barcelona | Vintage Football Shirts</h2>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                  <span className="font-bold text-[#ffb35c]">4.9</span>
+                  <span className="font-bold text-[#ffb35c]">{googleRating.toFixed(1)}</span>
                   <StarRow />
-                  <span className="text-xs text-slate-400">152 reviews on <span className="font-semibold text-slate-200">Google</span></span>
+                  <span className="text-xs text-slate-400">{googleReviewCount} reviews on <span className="font-semibold text-slate-200">Google</span></span>
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2"><button type="button" onClick={() => { setFormError(''); setFormOpen(true); }} className="inline-flex items-center justify-center rounded-md bg-emerald-400 px-4 py-2 text-xs font-bold text-[#081120] transition hover:bg-emerald-300">Share your review</button><a href="https://www.google.com/maps/place/Headbutt+Barcelona+Vintage+Football+Store/@41.3812711,2.1748955,17z/data=!4m17!1m8!3m7!1s0x12a4a3cc4350d87b:0x438cad57a0ffff8e!2sHeadbutt+Barcelona+Vintage+Football+Store!8m2!3d41.3812711!4d2.1748955!10e1!16s%2Fg%2F11npqm4k_0!3m7!1s0x12a4a3cc4350d87b:0x438cad57a0ffff8e!8m2!3d41.3812711!4d2.1748955!9m1!1b1!16s%2Fg%2F11npqm4k_0!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#243044] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#33435b]"><ExternalLink size={14} className="text-emerald-400" /> Google review</a></div>
+            <div className="flex flex-wrap gap-2"><button type="button" onClick={() => { setFormError(''); setFormOpen(true); }} className="inline-flex items-center justify-center rounded-md bg-emerald-400 px-4 py-2 text-xs font-bold text-[#081120] transition hover:bg-emerald-300">Share your review</button><a href={googleReviewsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#243044] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#33435b]"><ExternalLink size={14} className="text-emerald-400" /> Google review</a></div>
           </div>
         </div>
 
         <div className="relative mt-5">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {visibleReviews.map((review) => (
-              <article key={review.name} className="flex min-h-[196px] flex-col rounded-2xl border border-white/[0.05] bg-[#111b2b] p-4">
+          <div ref={reviewsTrackRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {allReviews.map((review, index) => {
+              const key = reviewKey(review, index);
+              const isExpanded = expandedReview === key;
+              const reviewCopy = review.copy?.trim() || 'No written comment.';
+              const hasMoreText = reviewCopy.length > 110;
+              const reviewPhotos = review.photos?.length ? review.photos : review.photo ? [review.photo] : [];
+              return (
+              <article key={key} className="flex min-h-[236px] w-[calc(100%-2rem)] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/[0.05] bg-[#111b2b] p-4 sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold ${review.avatarClass}`}>{review.initials}</div>
+                    <ReviewAvatar review={review} />
                     <div className="min-w-0">
                       <h3 className="truncate text-xs font-bold text-white">{review.name}</h3>
-                      <p className="mt-0.5 text-[10px] text-slate-400">{review.age}</p>
+                      <p className="mt-0.5 truncate whitespace-nowrap text-[10px] text-slate-400">{review.age}</p>
                     </div>
                   </div>
                   <span className="font-bold text-[15px] text-[#4285f4]" aria-label="Google">G</span>
                 </div>
                 <div className="mt-3 flex items-center gap-2"><StarRow rating={review.rating} /><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /></div>
-                <div className="mt-3 flex flex-1 gap-3">
-                  <p className={`${expandedReview === review.name ? '' : 'line-clamp-4'} text-xs leading-5 text-slate-200`}>{review.copy}</p>
-                  {review.photo && <Image src={review.photo} alt="" width={44} height={44} className="h-11 w-11 shrink-0 rounded-md object-cover" />}
+                <div className="mt-3 min-w-0 overflow-hidden">
+                  <p className={`${isExpanded || !hasMoreText ? '' : 'line-clamp-2'} min-w-0 text-xs leading-5 text-slate-200`}>{reviewCopy}</p>
+                  {reviewPhotos.length > 0 && (
+                    <div className="flex max-w-full gap-1 overflow-hidden" aria-label={`${reviewPhotos.length} review photos`}>
+                      {reviewPhotos.slice(0, 4).map((photo, photoIndex) => (
+                        <ReviewPhoto key={`${key}-photo-${photoIndex}`} src={photo} onOpen={() => setSelectedPhoto(photo)} />
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <button type="button" onClick={() => setExpandedReview((current) => current === review.name ? null : review.name)} className="mt-3 w-fit text-xs font-bold text-white transition hover:text-emerald-300">
-                  {expandedReview === review.name ? 'Show less' : 'Show more'}
-                </button>
+                <div className="mt-auto flex items-center justify-between gap-3 pt-3">
+                  {hasMoreText ? (
+                    <button type="button" onClick={() => setExpandedReview((current) => current === key ? null : key)} className="w-fit text-xs font-bold text-white transition hover:text-emerald-300">
+                      {isExpanded ? 'Show less' : 'Show more'}
+                    </button>
+                  ) : <span />}
+                  <a href={googleReviewsUrl} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-1 text-[11px] font-bold text-emerald-300 transition hover:text-emerald-200">
+                    View on Google <ExternalLink size={12} />
+                  </a>
+                </div>
               </article>
-            ))}
+              );
+            })}
           </div>
           <div className="absolute inset-y-0 -left-3 hidden items-center lg:flex">
-            <button type="button" onClick={goBack} disabled={!canGoBack} aria-label="Previous reviews" className="grid h-7 w-7 place-items-center rounded-full bg-slate-800 text-white shadow-lg transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-30"><ChevronLeft size={16} /></button>
+            <button type="button" onClick={() => scrollReviews('back')} aria-label="Previous reviews" className="grid h-8 w-8 place-items-center rounded-full bg-slate-800 text-white shadow-lg transition hover:bg-slate-700"><ChevronLeft size={16} /></button>
           </div>
           <div className="absolute inset-y-0 -right-3 hidden items-center lg:flex">
-            <button type="button" onClick={goForward} disabled={!canGoForward} aria-label="Next reviews" className="grid h-7 w-7 place-items-center rounded-full bg-slate-800 text-white shadow-lg transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-30"><ChevronRight size={16} /></button>
+            <button type="button" onClick={() => scrollReviews('forward')} aria-label="Next reviews" className="grid h-8 w-8 place-items-center rounded-full bg-slate-800 text-white shadow-lg transition hover:bg-slate-700"><ChevronRight size={16} /></button>
           </div>
           <div className="mt-4 flex justify-end gap-2 lg:hidden">
-            <button type="button" onClick={goBack} disabled={!canGoBack} aria-label="Previous reviews" className="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-white disabled:opacity-30"><ChevronLeft size={16} /></button>
-            <button type="button" onClick={goForward} disabled={!canGoForward} aria-label="Next reviews" className="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-white disabled:opacity-30"><ChevronRight size={16} /></button>
+            <button type="button" onClick={() => scrollReviews('back')} aria-label="Previous reviews" className="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-white"><ChevronLeft size={16} /></button>
+            <button type="button" onClick={() => scrollReviews('forward')} aria-label="Next reviews" className="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-white"><ChevronRight size={16} /></button>
           </div>
         </div>
+        {selectedPhoto && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Review photo preview"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#02050b]/90 p-4 backdrop-blur-sm"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedPhoto(null)}
+              aria-label="Close photo preview"
+              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            >
+              <X size={20} />
+            </button>
+            <img
+              src={selectedPhoto}
+              alt="Expanded Google review photo"
+              onClick={(event) => event.stopPropagation()}
+              className="max-h-[88vh] max-w-[94vw] rounded-xl object-contain shadow-2xl"
+            />
+          </div>
+        )}
         <div className="mt-6 overflow-hidden opacity-80" aria-label="Trust badges">
           <Marquee>
             <div className="flex shrink-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-4 mx-2">

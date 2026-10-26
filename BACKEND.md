@@ -25,3 +25,38 @@ If the database is missing or temporarily unavailable, the public catalogue stil
 - `GET /api/orders?email=...` lists demo orders for that email.
 
 The demo store is intentionally retained as a resilience fallback. Checkout is still a demo flow and does not take payment; connect a payment provider such as Stripe or Shopify Payments before accepting live orders.
+
+## Google reviews (avatars and photos)
+
+The review cards on the homepage show each reviewer's Google profile picture and
+the photos attached to their review. Only the **Google Business Profile API**
+returns both, so it is the source the site uses.
+
+Set these in `.env.local` and in the Vercel project environment:
+
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — the OAuth client
+- `GOOGLE_REFRESH_TOKEN` — the long-lived token used by the server
+- `GOOGLE_BUSINESS_ACCOUNT_ID` — the Google account id that owns the listing
+- `GOOGLE_BUSINESS_LOCATION_ID` — optional; the server discovers it if unset
+
+Refresh the credentials whenever the token is revoked or expires:
+
+```bash
+npm run auth:google-business
+```
+
+The script opens Google's consent screen (sign in with the account that owns
+the Headbutt listing), then rewrites `GOOGLE_REFRESH_TOKEN` and
+`GOOGLE_BUSINESS_LOCATION_ID` in `.env.local`. The redirect URI it uses is
+`http://localhost:8080`; pass `--port` if a different one is registered on the
+OAuth client. Restart the dev server afterwards.
+
+The Google Cloud project must have the My Business API enabled and Business
+Profile API access approved. `GET /api/google-reviews` reports the exact
+failure (`invalid_grant`, missing approval, unknown location) when it cannot
+load live reviews; the page then falls back to the built-in review list.
+
+The Places API (New) is a secondary source: it can supply the rating and
+review count, but Google returns no review objects for this place, so it
+cannot provide avatars or photos.
+
