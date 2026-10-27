@@ -17,15 +17,17 @@ import {
 import { verifyAdminPassword } from '@/lib/adminPasswords';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
 
-async function startSession(identity: AdminIdentity) {
+async function startSession(identity: AdminIdentity): Promise<string> {
+  const token = await createAdminToken(identity);
   const store = await cookies();
-  store.set(ADMIN_SESSION_COOKIE, await createAdminToken(identity), {
+  store.set(ADMIN_SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
     maxAge: ADMIN_SESSION_MAX_AGE_SECONDS,
   });
+  return token;
 }
 
 /** Reports who is signed in. */
@@ -75,8 +77,8 @@ export async function POST(request: Request) {
       name: account.name,
       role: account.role,
     };
-    await startSession(identity);
-    return Response.json({ ok: true, identity });
+    const token = await startSession(identity);
+    return Response.json({ ok: true, identity, token });
   }
 
   const pin = typeof body?.pin === 'string' ? body.pin.trim() : '';
@@ -95,8 +97,8 @@ export async function POST(request: Request) {
 
     clearRateLimit(`session:${address}`);
     const identity: AdminIdentity = { kind: 'pin', role: 'owner', name: 'Owner' };
-    await startSession(identity);
-    return Response.json({ ok: true, identity });
+    const token = await startSession(identity);
+    return Response.json({ ok: true, identity, token });
   }
 
   return Response.json({ error: 'Enter your email and password.' }, { status: 400 });
