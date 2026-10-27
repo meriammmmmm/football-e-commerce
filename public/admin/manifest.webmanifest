@@ -2,7 +2,7 @@
   "name": "Headbutt Admin",
   "short_name": "Headbutt",
   "description": "Add shirts to the Headbutt catalogue from your phone.",
-  "start_url": "/admin",
+  "start_url": "/admin/login",
   "scope": "/admin",
   "display": "standalone",
   "orientation": "portrait",
