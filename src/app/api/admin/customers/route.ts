@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getRequestAdminIdentity } from '@/lib/adminGuard';
 import { ensureTables, getDb, isDatabaseConfigured } from '@/lib/db';
 

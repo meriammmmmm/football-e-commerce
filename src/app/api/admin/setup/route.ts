@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { countAdminAccounts } from '@/lib/adminAccounts';
 import { isAdminConfigured } from '@/lib/adminAuth';
 

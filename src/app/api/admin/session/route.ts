@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { cookies } from 'next/headers';
 import {
   ADMIN_SESSION_COOKIE,

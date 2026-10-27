@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import type { Metadata, Viewport } from 'next';
 import ServiceWorkerRegistrar from '@/components/admin/ServiceWorkerRegistrar';
 import InstallBanner from '@/components/admin/InstallBanner';

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getRequestAdminIdentity } from '@/lib/adminGuard';
 import { canManageStaff } from '@/lib/adminAuth';
 import { deleteAdminAccount, getAdminAccountById, setAdminAccountPassword } from '@/lib/adminAccounts';

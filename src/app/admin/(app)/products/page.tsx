@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import ProductList from '@/components/admin/ProductList';
 import { listProducts } from '@/lib/productStore';
 

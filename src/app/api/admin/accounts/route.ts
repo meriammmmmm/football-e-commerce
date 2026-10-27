@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getRequestAdminIdentity } from '@/lib/adminGuard';
 import { canManageStaff, isAdminConfigured, pinMatches } from '@/lib/adminAuth';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
