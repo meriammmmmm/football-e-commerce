@@ -2,6 +2,18 @@ import { getRequestAdminIdentity } from '@/lib/adminGuard';
 import { canManageStaff, isAdminConfigured, pinMatches } from '@/lib/adminAuth';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
 import { countAdminAccounts, createAdminAccount, listAdminAccounts, normalizeAdminEmail, toPublicAccount } from '@/lib/adminAccounts';
+import { verifyAdminPassword } from '@/lib/adminPasswords';
+import { getStoredPinHash } from '@/lib/adminConfig';
+
+/** Checks PIN against DB hash first, then env var fallback. */
+async function checkPin(candidate: string): Promise<boolean> {
+  if (!candidate) return false;
+  try {
+    const storedHash = await getStoredPinHash();
+    if (storedHash) return verifyAdminPassword(candidate, storedHash);
+  } catch { /* DB unavailable */ }
+  return pinMatches(candidate);
+}
 
 /** Lists the staff accounts that can sign in to the admin app. */
 export async function GET() {
@@ -71,7 +83,7 @@ export async function POST(request: Request) {
           { status: 503 },
         );
       }
-      if (!(await pinMatches(pin))) {
+      if (!(await checkPin(pin))) {
         return Response.json(
           { error: 'That PIN is not correct. Check the ADMIN_PIN in the server settings.' },
           { status: 401 },

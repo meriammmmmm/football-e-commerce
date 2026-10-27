@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { LayoutGrid, Loader2, LogOut, PlusCircle, Users } from 'lucide-react';
+import { LayoutGrid, Loader2, LogOut, PlusCircle, ShoppingBag, Users } from 'lucide-react';
 import { canManageStaff, type AdminIdentity } from '@/lib/adminAuth';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Add', icon: PlusCircle },
   { href: '/admin/products', label: 'Catalogue', icon: LayoutGrid },
+  { href: '/admin/customers', label: 'Customers', icon: ShoppingBag },
 ];
 
 export default function AdminShell({
@@ -36,7 +37,6 @@ export default function AdminShell({
   const items = canManageStaff(identity)
     ? [...NAV_ITEMS, { href: '/admin/staff', label: 'Staff', icon: Users }]
     : NAV_ITEMS;
-
   const who = identity
     ? identity.kind === 'account'
       ? identity.name || identity.email

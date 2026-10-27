@@ -1,8 +1,19 @@
 import { getRequestAdminIdentity } from '@/lib/adminGuard';
 import { canManageStaff, pinMatches } from '@/lib/adminAuth';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
-import { hasStoredPin, setStoredPin } from '@/lib/adminConfig';
+import { hasStoredPin, setStoredPin, getStoredPinHash } from '@/lib/adminConfig';
 import { isDatabaseConfigured } from '@/lib/db';
+import { verifyAdminPassword } from '@/lib/adminPasswords';
+
+/** Checks PIN against DB hash first, then env var fallback. */
+async function checkPin(candidate: string): Promise<boolean> {
+  if (!candidate) return false;
+  try {
+    const storedHash = await getStoredPinHash();
+    if (storedHash) return verifyAdminPassword(candidate, storedHash);
+  } catch { /* DB unavailable */ }
+  return pinMatches(candidate);
+}
 
 /**
  * GET /api/admin/pin
@@ -68,7 +79,7 @@ export async function PATCH(request: Request) {
     if (!currentPin) {
       return Response.json({ error: 'Enter your current PIN to confirm the change.' }, { status: 400 });
     }
-    if (!(await pinMatches(currentPin))) {
+    if (!(await checkPin(currentPin))) {
       return Response.json({ error: 'That current PIN is not correct.' }, { status: 401 });
     }
   }

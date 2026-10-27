@@ -77,34 +77,12 @@ function equalStrings(a: string, b: string): boolean {
 }
 
 /**
- * Checks a PIN candidate against the stored PIN.
- *
- * Priority:
- *  1. PIN hash saved in the `admin_config` DB table (set by the owner in-app).
- *  2. Fallback: `ADMIN_PIN` environment variable (hashed on the fly).
- *
- * We never leak *how* wrong the guess was — both paths use constant-time
- * comparison.
+ * Checks a PIN against `ADMIN_PIN` without leaking how wrong it was.
+ * The DB-override priority is handled in the session route, which is server-only.
  */
 export async function pinMatches(candidate: string): Promise<boolean> {
-  if (!candidate) return false;
-
-  // Try the DB-stored hash first (import lazily so the module stays browser-safe
-  // when the DB helpers are not needed).
-  try {
-    const { getStoredPinHash } = await import('@/lib/adminConfig');
-    const storedHash = await getStoredPinHash();
-    if (storedHash) {
-      const { verifyAdminPassword } = await import('@/lib/adminPasswords');
-      return verifyAdminPassword(candidate, storedHash);
-    }
-  } catch {
-    // DB not available — fall through to env var check.
-  }
-
-  // Fallback: compare against ADMIN_PIN env var using SHA-256 hashes.
   const expected = adminPin();
-  if (!expected) return false;
+  if (!expected || !candidate) return false;
   const [candidateHash, expectedHash] = await Promise.all([sha256(candidate), sha256(expected)]);
   return equalStrings(candidateHash, expectedHash);
 }

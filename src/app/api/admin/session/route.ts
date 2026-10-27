@@ -15,7 +15,23 @@ import {
   touchAdminAccountLogin,
 } from '@/lib/adminAccounts';
 import { verifyAdminPassword } from '@/lib/adminPasswords';
+import { getStoredPinHash } from '@/lib/adminConfig';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
+
+/**
+ * Checks a PIN candidate using the DB-stored hash first, then the env var.
+ * Lives here (a server-only route file) so adminAuth.ts stays browser-safe.
+ */
+async function checkPin(candidate: string): Promise<boolean> {
+  if (!candidate) return false;
+  try {
+    const storedHash = await getStoredPinHash();
+    if (storedHash) return verifyAdminPassword(candidate, storedHash);
+  } catch {
+    // DB unavailable — fall through to env var
+  }
+  return pinMatches(candidate);
+}
 
 async function startSession(identity: AdminIdentity): Promise<string> {
   const token = await createAdminToken(identity);
@@ -91,7 +107,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!(await pinMatches(pin))) {
+    if (!(await checkPin(pin))) {
       return Response.json({ error: 'That PIN is not correct.' }, { status: 401 });
     }
 
