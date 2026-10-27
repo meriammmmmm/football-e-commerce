@@ -16,7 +16,11 @@ export const metadata: Metadata = {
   description:
     "Discover standout vintage football shirts, timeless kits, and iconic player jerseys from Headbutt Barcelona.",
   applicationName: "Headbutt Barcelona",
-  manifest: "/manifest.webmanifest",
+  // manifest is NOT set here — setting it in the root layout injects
+  // <link rel="manifest" href="/manifest.webmanifest"> on /admin/* pages too,
+  // which makes iOS Safari open the shop PWA when an admin link is shared.
+  // The shop manifest is injected in the shop page directly (React 19 hoisting),
+  // and the admin manifest is injected in the admin layout.
   appleWebApp: { capable: true, title: "Headbutt", statusBarStyle: "black-translucent" },
   icons: {
     icon: "/headbutt-logo.jpg",

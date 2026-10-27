@@ -11,6 +11,10 @@ import Hero from '@/components/Hero';
 import CartDrawer from '@/components/CartDrawer';
 import type { CartItem, Product } from '@/types';
 
+// Inject the shop PWA manifest only on shop pages (React 19 hoists this to <head>).
+// The admin layout injects its own manifest, so each URL gets the right PWA scope.
+const ShopManifest = () => <link rel="manifest" href="/manifest.webmanifest" />;
+
 const HERO_IFRAME = 'https://customer-lx9ld4quur3dic2x.cloudflarestream.com/9a1e319c031e68dbd67156531b462957/iframe?muted=true&preload=true&loop=true&autoplay=true&controls=false&poster=https%3A%2F%2Fcustomer-lx9ld4quur3dic2x.cloudflarestream.com%2F9a1e319c031e68dbd67156531b462957%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600';
 const HERO_POSTER = 'https://customer-lx9ld4quur3dic2x.cloudflarestream.com/9a1e319c031e68dbd67156531b462957/thumbnails/thumbnail.jpg?time=&height=600';
 
@@ -50,6 +54,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0a1628]" style={{ margin: 0, padding: 0, width: '100%' }}>
+      {/* Inject shop manifest here so it only appears on shop pages, not /admin pages */}
+      <ShopManifest />
       <Header onNavigate={navigate} currentPage={page} onSearch={setSearchQuery} onSelectProduct={selectProduct} cartItemCount={cartItemCount} onOpenCart={() => setCartOpen(true)} />
 
       {page === 'home' && (
