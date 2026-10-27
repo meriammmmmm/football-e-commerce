@@ -3,6 +3,7 @@ import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import ScrollProgress from "@/components/ScrollProgress";
 import SmoothScroll from "@/components/SmoothScroll";
+import ClientPwa from "@/components/ClientPwa";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -15,6 +16,8 @@ export const metadata: Metadata = {
   description:
     "Discover standout vintage football shirts, timeless kits, and iconic player jerseys from Headbutt Barcelona.",
   applicationName: "Headbutt Barcelona",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Headbutt", statusBarStyle: "black-translucent" },
   icons: {
     icon: "/headbutt-logo.jpg",
     apple: "/headbutt-logo.jpg",
@@ -54,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SmoothScroll>
           <ScrollProgress />
           <CustomCursor />
+          <ClientPwa />
           {children}
         </SmoothScroll>
       </body>
