@@ -2,7 +2,7 @@
    Caches the full app shell on install so the admin opens instantly
    and works fully offline. API calls always go to the network. */
 
-const CACHE = 'headbutt-admin-v3';
+const CACHE = 'headbutt-admin-v4';
 
 // Pages that form the app shell
 const SHELL = [

@@ -4,6 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Headbutt Barcelona',
     short_name: 'Headbutt',
+    id: '/',
     description: 'Vintage football shirts and iconic player jerseys.',
     start_url: '/',
     scope: '/',

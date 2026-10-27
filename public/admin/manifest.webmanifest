@@ -1,6 +1,7 @@
 {
   "name": "Headbutt Admin",
   "short_name": "Headbutt",
+  "id": "/admin",
   "description": "Add shirts to the Headbutt catalogue from your phone.",
   "start_url": "/admin/login",
   "scope": "/admin",
