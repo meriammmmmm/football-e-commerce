@@ -23,7 +23,7 @@ export function isDatabaseConfigured() {
 // Create database pool
 let pool: Pool | null = null;
 let databaseReady: Promise<void> | null = null;
-function getDb() {
+export function getDb() {
   const connectionString = getConnectionString();
   if (!connectionString) {
     throw new Error('No database connection string found');
@@ -40,7 +40,7 @@ function getDb() {
   return pool;
 }
 
-async function ensureTables() {
+export async function ensureTables() {
   databaseReady ??= (async () => {
     const db = getDb();
     // Create users table
@@ -76,6 +76,71 @@ async function ensureTables() {
         rating INTEGER NOT NULL,
         copy TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Create products table. This is what the admin mobile app writes to.
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        league TEXT,
+        team TEXT NOT NULL,
+        player TEXT,
+        "number" TEXT,
+        price NUMERIC(10,2) NOT NULL DEFAULT 0,
+        sleeve_type TEXT,
+        category TEXT,
+        rating REAL NOT NULL DEFAULT 0,
+        reviews_count INTEGER NOT NULL DEFAULT 0,
+        image_url TEXT,
+        hover_image_url TEXT,
+        description TEXT,
+        sizes JSONB NOT NULL DEFAULT '[]'::jsonb,
+        colors JSONB NOT NULL DEFAULT '[]'::jsonb,
+        available BOOLEAN NOT NULL DEFAULT TRUE,
+        is_new BOOLEAN NOT NULL DEFAULT FALSE,
+        is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+        position INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Create product_images table. Photos uploaded from the admin app live here
+    // as bytes because the Vercel filesystem is read-only at runtime.
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS product_images (
+        product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+        slot TEXT NOT NULL,
+        mime TEXT NOT NULL,
+        data BYTEA NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        PRIMARY KEY (product_id, slot)
+      )
+    `);
+
+    // Key/value table used to remember one-time setup steps (e.g. catalogue seed)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Create admin_users table. These are the staff accounts that sign in to
+    // the admin mobile app with an email and a password.
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'staff',
+        source TEXT NOT NULL DEFAULT 'app',
+        created_at TIMESTAMP DEFAULT NOW(),
+        last_login_at TIMESTAMP
       )
     `);
   })().catch((error) => {

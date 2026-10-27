@@ -1,10 +1,19 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 
 export default function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.2 });
+  const [hidden, setHidden] = useState(true);
+
+  useEffect(() => {
+    // The admin app is a standalone tool, not part of the storefront shell.
+    setHidden(window.location.pathname.startsWith('/admin'));
+  }, []);
+
+  if (hidden) return null;
 
   return (
     <motion.div

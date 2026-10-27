@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "init-db": "tsx scripts/init-db.ts",
+    "icons:admin": "node scripts/generate-admin-icons.mjs",
     "auth:google-business": "node scripts/google-business-auth.mjs"
   },
   "dependencies": {
