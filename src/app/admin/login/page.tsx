@@ -71,6 +71,7 @@ export default function AdminLoginPage() {
   const [tab, setTab] = useState<'email' | 'pin'>('email');
   const [needsSetup, setNeedsSetup] = useState(false);
   const [setupMode, setSetupMode] = useState(false);
+  const [setupUnlocked, setSetupUnlocked] = useState(false);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -127,6 +128,10 @@ export default function AdminLoginPage() {
   };
 
   const createFirstAccount = async () => {
+    if (!setupUnlocked) {
+      setError('Enter the owner PIN first.');
+      return;
+    }
     if (!name.trim()) {
       setError('Enter your name.');
       return;
@@ -139,11 +144,6 @@ export default function AdminLoginPage() {
       setError('Use a password of at least 8 characters.');
       return;
     }
-    if (!pin) {
-      setError('Enter your admin PIN to confirm.');
-      return;
-    }
-
     setBusy(true);
     setError(null);
 
@@ -151,7 +151,7 @@ export default function AdminLoginPage() {
       const response = await fetch('/api/admin/accounts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), name: name.trim(), password, pin }),
+        body: JSON.stringify({ email: email.trim(), name: name.trim(), password }),
       });
 
       const data = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -163,6 +163,37 @@ export default function AdminLoginPage() {
       setNeedsSetup(false);
       setSetupMode(false);
       await signIn();
+    } catch {
+      setError('No connection to the server.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const unlockSetup = async () => {
+    if (!pin) {
+      setError('Enter your owner PIN.');
+      return;
+    }
+
+    setBusy(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/admin/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
+      });
+
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      if (!response.ok) {
+        setError(data?.error ?? 'That PIN is not correct.');
+        return;
+      }
+
+      setSetupUnlocked(true);
+      setPin('');
     } catch {
       setError('No connection to the server.');
     } finally {
@@ -249,8 +280,40 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        {setupMode ? (
+        {setupMode ? !setupUnlocked ? (
+          <div>
+            <p className="mb-4 text-center text-sm font-semibold text-white/60">
+              Enter the owner PIN configured on the server to begin setup.
+            </p>
+            <PinKeypad value={pin} onChange={setPin} disabled={busy} />
+
+            <button
+              type="button"
+              onClick={unlockSetup}
+              disabled={busy || !pin}
+              className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 text-base font-black text-[#081120] transition active:scale-[0.98] disabled:opacity-50"
+            >
+              {busy && <Loader2 size={18} className="animate-spin" />}
+              {busy ? 'Checking PIN…' : 'Continue'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSetupMode(false);
+                setTab('pin');
+                setError(null);
+              }}
+              className="mt-3 w-full text-center text-xs font-bold text-emerald-300/80 underline underline-offset-4"
+            >
+              Use my PIN to enter the admin
+            </button>
+          </div>
+        ) : (
           <div className="space-y-3">
+            <p className="mb-1 text-center text-sm font-semibold text-white/60">
+              PIN confirmed. Create the owner email and password for future sign-ins.
+            </p>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -276,11 +339,6 @@ export default function AdminLoginPage() {
               className={INPUT}
             />
 
-            <p className="pt-2 text-center text-xs font-bold uppercase tracking-wider text-white/40">
-              Confirm with your admin PIN
-            </p>
-            <PinKeypad value={pin} onChange={setPin} disabled={busy} />
-
             <button
               type="button"
               onClick={createFirstAccount}
@@ -288,7 +346,7 @@ export default function AdminLoginPage() {
               className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 text-base font-black text-[#081120] transition active:scale-[0.98] disabled:opacity-50"
             >
               {busy && <Loader2 size={18} className="animate-spin" />}
-              {busy ? 'Creating…' : 'Create my account'}
+              {busy ? 'Creating…' : 'Create owner account'}
             </button>
 
             <button
@@ -343,6 +401,7 @@ export default function AdminLoginPage() {
                 type="button"
                 onClick={() => {
                   setSetupMode(true);
+                  setSetupUnlocked(false);
                   setError(null);
                 }}
                 className="w-full pt-1 text-center text-xs font-bold text-emerald-300/80 underline underline-offset-4"
