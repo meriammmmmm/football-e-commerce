@@ -140,7 +140,7 @@ export default function AdminLoginPage() {
       return;
     }
     if (!pin) {
-      setError('Enter your admin PIN to create the first account.');
+      setError('Enter your admin PIN to confirm.');
       return;
     }
 
@@ -289,6 +289,18 @@ export default function AdminLoginPage() {
             >
               {busy && <Loader2 size={18} className="animate-spin" />}
               {busy ? 'Creating…' : 'Create my account'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSetupMode(false);
+                setTab('pin');
+                setError(null);
+              }}
+              className="w-full pt-1 text-center text-xs font-bold text-emerald-300/80 underline underline-offset-4"
+            >
+              Use my PIN instead
             </button>
           </div>
         ) : tab === 'email' ? (

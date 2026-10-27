@@ -57,15 +57,33 @@ export async function POST(request: Request) {
 
   if (existingAccounts === 0) {
     // First account: the PIN proves this is the owner setting things up.
-    if (!pin || !isAdminConfigured() || !(await pinMatches(pin))) {
-      return Response.json(
-        { error: 'Enter the admin PIN to create the first account.' },
-        { status: 401 },
-      );
+    // Unlocking with the PIN already counts as that proof.
+    const unlockedWithPin = identity?.kind === 'pin';
+    const pinGiven = pin.length > 0;
+
+    if (!unlockedWithPin && !pinGiven) {
+      return Response.json({ error: 'Enter your admin PIN to confirm.' }, { status: 400 });
+    }
+    if (!unlockedWithPin) {
+      if (!isAdminConfigured()) {
+        return Response.json(
+          { error: 'Admin access is not set up on this server yet. Add ADMIN_PIN to the environment.' },
+          { status: 503 },
+        );
+      }
+      if (!(await pinMatches(pin))) {
+        return Response.json(
+          { error: 'That PIN is not correct. Check the ADMIN_PIN in the server settings.' },
+          { status: 401 },
+        );
+      }
     }
     clearRateLimit(`accounts:${address}`);
   } else if (!canManageStaff(identity)) {
     return Response.json({ error: 'Only the owner can add staff accounts.' }, { status: 401 });
+  } else {
+    // An authorised owner must never be locked out by the attempt counter.
+    clearRateLimit(`accounts:${address}`);
   }
 
   try {

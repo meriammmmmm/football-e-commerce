@@ -187,9 +187,13 @@ export default function StaffPanel({
       </section>
 
       <section className="rounded-2xl border border-white/10 bg-[#101f36] p-4">
-        <h2 className="text-xs font-black uppercase tracking-[0.16em] text-emerald-300/80">Add someone</h2>
+        <h2 className="text-xs font-black uppercase tracking-[0.16em] text-emerald-300/80">
+          {accounts.length === 0 ? 'Create your sign-in account' : 'Add someone'}
+        </h2>
         <p className="mt-1 text-xs font-medium text-white/45">
-          They sign in with this email and password on their phone.
+          {accounts.length === 0
+            ? 'The first account becomes the owner. It signs in with an email and a password.'
+            : 'They sign in with this email and password on their phone.'}
         </p>
 
         <div className="mt-4 space-y-3">

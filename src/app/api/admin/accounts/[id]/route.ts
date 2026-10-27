@@ -58,7 +58,9 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (account.role === 'owner') {
     const { listAdminAccounts } = await import('@/lib/adminAccounts');
     const owners = (await listAdminAccounts()).filter((item) => item.role === 'owner');
-    if (owners.length <= 1) {
+    // The PIN is the master key, so it may always remove the last owner and
+    // leave the app ready for a fresh account.
+    if (owners.length <= 1 && identity.kind !== 'pin') {
       return Response.json({ error: 'Keep at least one owner account.' }, { status: 400 });
     }
   }
