@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { ADMIN_SESSION_COOKIE, canManageStaff, getAdminIdentity } from '@/lib/adminAuth';
 import { listAdminAccounts } from '@/lib/adminAccounts';
+import { hasStoredPin } from '@/lib/adminConfig';
 import StaffPanel from '@/components/admin/StaffPanel';
 
 export default async function StaffPage() {
@@ -23,6 +24,7 @@ export default async function StaffPage() {
   }
 
   const accounts = await listAdminAccounts();
+  const pinCustom = await hasStoredPin();
 
   return (
     <div className="mx-auto max-w-md px-4 py-6">
@@ -36,6 +38,7 @@ export default async function StaffPage() {
 
       <StaffPanel
         identity={identity}
+        pinCustom={pinCustom}
         initialAccounts={accounts.map((account) => ({
           id: account.id,
           email: account.email,

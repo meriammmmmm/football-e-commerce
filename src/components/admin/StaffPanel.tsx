@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertCircle, Check, Loader2, Trash2, UserPlus } from 'lucide-react';
+import { AlertCircle, Check, KeyRound, Loader2, Trash2, UserPlus } from 'lucide-react';
 import type { AdminIdentity } from '@/lib/adminAuth';
 
 interface Account {
@@ -20,9 +20,12 @@ const INPUT =
 export default function StaffPanel({
   identity,
   initialAccounts,
+  pinCustom = false,
 }: {
   identity: AdminIdentity | null;
   initialAccounts: Account[];
+  /** Whether the admin has already set a custom PIN from inside the app. */
+  pinCustom?: boolean;
 }) {
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -37,6 +40,15 @@ export default function StaffPanel({
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [savingPassword, setSavingPassword] = useState(false);
+
+  // ── PIN change state ──────────────────────────────────────────────────────
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [savingPin, setSavingPin] = useState(false);
+  const [hasCustomPin, setHasCustomPin] = useState(pinCustom);
+
+  const isOwner = identity?.kind === 'pin' || identity?.role === 'owner';
 
   const createAccount = async () => {
     setError(null);
@@ -116,6 +128,47 @@ export default function StaffPanel({
       setError('No connection to the server.');
     } finally {
       setSavingPassword(false);
+    }
+  };
+
+  const changePin = async () => {
+    setError(null);
+    setMessage(null);
+
+    if (!newPin) {
+      setError('Enter the new PIN.');
+      return;
+    }
+    if (newPin.length < 4) {
+      setError('The PIN must be at least 4 characters.');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setError('The PINs do not match. Re-enter to confirm.');
+      return;
+    }
+
+    setSavingPin(true);
+    try {
+      const response = await fetch('/api/admin/pin', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPin: currentPin || undefined, newPin }),
+      });
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      if (!response.ok) {
+        setError(data?.error ?? 'Could not save the PIN.');
+        return;
+      }
+      setCurrentPin('');
+      setNewPin('');
+      setConfirmPin('');
+      setHasCustomPin(true);
+      setMessage('PIN updated. All sign-ins will now use the new PIN.');
+    } catch {
+      setError('No connection to the server.');
+    } finally {
+      setSavingPin(false);
     }
   };
 
@@ -270,6 +323,64 @@ export default function StaffPanel({
           </div>
         </section>
       )}
+
+      {/* PIN change — only owners can do this */}
+      {isOwner && (
+        <section className="rounded-2xl border border-white/10 bg-[#101f36] p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <KeyRound size={14} className="text-emerald-300/80" />
+            <h2 className="text-xs font-black uppercase tracking-[0.16em] text-emerald-300/80">
+              Admin PIN
+            </h2>
+          </div>
+          <p className="text-xs font-medium text-white/45">
+            {hasCustomPin
+              ? 'A custom PIN is active. Change it below.'
+              : 'Using the default PIN from your environment settings. Set a custom PIN here to override it.'}
+          </p>
+
+          <div className="mt-4 space-y-3">
+            <input
+              value={currentPin}
+              onChange={(e) => setCurrentPin(e.target.value)}
+              placeholder="Current PIN"
+              type="password"
+              inputMode="numeric"
+              autoComplete="off"
+              className={INPUT}
+            />
+            <input
+              value={newPin}
+              onChange={(e) => setNewPin(e.target.value)}
+              placeholder="New PIN (4–20 characters)"
+              type="password"
+              inputMode="numeric"
+              autoComplete="new-password"
+              className={INPUT}
+            />
+            <input
+              value={confirmPin}
+              onChange={(e) => setConfirmPin(e.target.value)}
+              placeholder="Confirm new PIN"
+              type="password"
+              inputMode="numeric"
+              autoComplete="new-password"
+              className={INPUT}
+            />
+
+            <button
+              type="button"
+              onClick={changePin}
+              disabled={savingPin || !newPin}
+              className="flex min-h-13 w-full items-center justify-center gap-2 rounded-xl border border-white/15 px-5 text-sm font-black text-white/85 transition active:scale-[0.98] disabled:opacity-50"
+            >
+              {savingPin && <Loader2 size={18} className="animate-spin" />}
+              {savingPin ? 'Saving…' : 'Save PIN'}
+            </button>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
+

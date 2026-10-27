@@ -2,7 +2,9 @@
  * Admin access for the mobile catalogue app.
  *
  * The admin can unlock in two ways:
- *   - with the shared PIN from `ADMIN_PIN` (fast, good for one person)
+ *   - with the shared PIN (fast, good for one person). The PIN is read from the
+ *     database if the owner has changed it from inside the app, otherwise it
+ *     falls back to the `ADMIN_PIN` environment variable.
  *   - with an email and password (a real account, good for a team)
  *
  * Either way the browser never keeps the secret. It exchanges it once for a
@@ -74,10 +76,35 @@ function equalStrings(a: string, b: string): boolean {
   return diff === 0;
 }
 
-/** Checks a PIN against `ADMIN_PIN` without leaking how wrong it was. */
+/**
+ * Checks a PIN candidate against the stored PIN.
+ *
+ * Priority:
+ *  1. PIN hash saved in the `admin_config` DB table (set by the owner in-app).
+ *  2. Fallback: `ADMIN_PIN` environment variable (hashed on the fly).
+ *
+ * We never leak *how* wrong the guess was — both paths use constant-time
+ * comparison.
+ */
 export async function pinMatches(candidate: string): Promise<boolean> {
+  if (!candidate) return false;
+
+  // Try the DB-stored hash first (import lazily so the module stays browser-safe
+  // when the DB helpers are not needed).
+  try {
+    const { getStoredPinHash } = await import('@/lib/adminConfig');
+    const storedHash = await getStoredPinHash();
+    if (storedHash) {
+      const { verifyAdminPassword } = await import('@/lib/adminPasswords');
+      return verifyAdminPassword(candidate, storedHash);
+    }
+  } catch {
+    // DB not available — fall through to env var check.
+  }
+
+  // Fallback: compare against ADMIN_PIN env var using SHA-256 hashes.
   const expected = adminPin();
-  if (!expected || !candidate) return false;
+  if (!expected) return false;
   const [candidateHash, expectedHash] = await Promise.all([sha256(candidate), sha256(expected)]);
   return equalStrings(candidateHash, expectedHash);
 }

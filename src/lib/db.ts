@@ -143,6 +143,17 @@ export async function ensureTables() {
         last_login_at TIMESTAMP
       )
     `);
+
+    // Single-row config table that stores the admin PIN hash when the owner
+    // has changed it from inside the app. When absent the ADMIN_PIN env var
+    // is used as the fallback.
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_config (
+        id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+        pin_hash TEXT,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
   })().catch((error) => {
     databaseReady = null;
     throw error;
