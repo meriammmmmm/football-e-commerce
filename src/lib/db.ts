@@ -144,16 +144,20 @@ export async function ensureTables() {
       )
     `);
 
-    // Single-row config table that stores the admin PIN hash when the owner
-    // has changed it from inside the app. When absent the ADMIN_PIN env var
-    // is used as the fallback.
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS admin_config (
-        id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
-        pin_hash TEXT,
-        updated_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
+    // Single-row config table for the in-app admin PIN override.
+    // Created separately so a failure here never blocks account creation.
+    try {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS admin_config (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          pin_hash TEXT,
+          updated_at TIMESTAMP DEFAULT NOW(),
+          CHECK (id = 1)
+        )
+      `);
+    } catch {
+      // Non-fatal — env-var PIN fallback still works without this table.
+    }
   })().catch((error) => {
     databaseReady = null;
     throw error;

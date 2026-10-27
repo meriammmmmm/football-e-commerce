@@ -105,7 +105,8 @@ export async function POST(request: Request) {
     if (error instanceof Error && error.message.includes('already exists')) {
       return Response.json({ error: 'An account already exists for this email.' }, { status: 409 });
     }
-    console.error('Admin account creation failed:', error);
-    return Response.json({ error: 'Could not create this account.' }, { status: 503 });
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error('Admin account creation failed:', detail);
+    return Response.json({ error: `Could not create this account: ${detail}` }, { status: 503 });
   }
 }
