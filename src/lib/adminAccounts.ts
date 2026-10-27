@@ -1,5 +1,6 @@
 import { ensureTables, getDb, isDatabaseConfigured } from '@/lib/db';
-import { hashAdminPassword, type AdminRole } from '@/lib/adminAuth';
+import { hashAdminPassword } from '@/lib/adminPasswords';
+import { type AdminRole } from '@/lib/adminAuth';
 
 export interface AdminAccount {
   id: string;

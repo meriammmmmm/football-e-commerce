@@ -14,7 +14,7 @@ import {
   syncEnvOwnerAccount,
   touchAdminAccountLogin,
 } from '@/lib/adminAccounts';
-import { verifyAdminPassword } from '@/lib/adminAuth';
+import { verifyAdminPassword } from '@/lib/adminPasswords';
 import { clearRateLimit, clientAddress, consumeRateLimit } from '@/lib/rateLimit';
 
 async function startSession(identity: AdminIdentity) {

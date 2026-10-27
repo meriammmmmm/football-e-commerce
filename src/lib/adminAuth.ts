@@ -8,18 +8,15 @@
  * Either way the browser never keeps the secret. It exchanges it once for a
  * signed session cookie that is validated on every request.
  *
- * This module deliberately avoids `next/headers` so it can also be used from
- * `proxy.ts`, which runs before the app.
+ * Everything in this file uses the Web Crypto API, so it is safe to include in
+ * a browser bundle. The password hashing lives in `adminPasswords.ts`, which is
+ * server only.
  */
-
-import { randomBytes, scrypt, timingSafeEqual } from 'crypto';
-import { promisify } from 'util';
 
 export const ADMIN_SESSION_COOKIE = 'hb_admin_session';
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 const encoder = new TextEncoder();
-const scryptAsync = promisify(scrypt);
 
 export type AdminRole = 'owner' | 'staff';
 
@@ -83,25 +80,6 @@ export async function pinMatches(candidate: string): Promise<boolean> {
   if (!expected || !candidate) return false;
   const [candidateHash, expectedHash] = await Promise.all([sha256(candidate), sha256(expected)]);
   return equalStrings(candidateHash, expectedHash);
-}
-
-/** Hashes a password with scrypt and a random salt. */
-export async function hashAdminPassword(password: string): Promise<string> {
-  const salt = randomBytes(16).toString('hex');
-  const derived = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `scrypt:${salt}:${derived.toString('hex')}`;
-}
-
-/** Checks a password against a stored scrypt hash. */
-export async function verifyAdminPassword(password: string, stored: string): Promise<boolean> {
-  const [scheme, salt, hash] = stored.split(':');
-  if (scheme !== 'scrypt' || !salt || !hash) return false;
-
-  const expected = Buffer.from(hash, 'hex');
-  if (expected.length !== 64) return false;
-
-  const derived = (await scryptAsync(password, salt, 64)) as Buffer;
-  return timingSafeEqual(derived, expected);
 }
 
 export async function createAdminToken(identity: AdminIdentity): Promise<string> {

@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail } from '@/lib/db';
+import { createUser, getUserByEmail, isDatabaseConfigured } from '@/lib/db';
 import { authenticateDemoUser, registerDemoUser } from '@/lib/demoStore';
 import { createHash } from 'crypto';
 
@@ -22,8 +22,13 @@ export async function POST(request: Request) {
       const user = await createUser(body.fullName, body.phone, body.address, email, hashPassword(body.password));
       return Response.json({ user }, { status: 201 });
     } catch (dbError) {
-      // Fallback to in-memory store
-      console.log('Database unavailable, using in-memory store');
+      // Never report success for a configured but unavailable database: the
+      // in-memory fallback would disappear on the next server restart.
+      if (isDatabaseConfigured()) {
+        console.error('Account registration database unavailable:', dbError);
+        return Response.json({ error: 'Accounts are temporarily unavailable. Please try again shortly.' }, { status: 503 });
+      }
+      // Demo mode is safe only when no database has been configured.
       try {
         const user = registerDemoUser({ fullName: body.fullName, phone: body.phone, address: body.address, email, password: body.password });
         return Response.json({ user }, { status: 201 });
@@ -51,8 +56,11 @@ export async function POST(request: Request) {
       }
     });
   } catch (dbError) {
-    // Fallback to in-memory store
-    console.log('Database unavailable, using in-memory store');
+    if (isDatabaseConfigured()) {
+      console.error('Account login database unavailable:', dbError);
+      return Response.json({ error: 'Accounts are temporarily unavailable. Please try again shortly.' }, { status: 503 });
+    }
+    // Demo mode is safe only when no database has been configured.
     const user = authenticateDemoUser(email, body.password);
     if (!user) {
       return Response.json({ error: 'Incorrect email or password. Create an account if you are new here.' }, { status: 401 });
