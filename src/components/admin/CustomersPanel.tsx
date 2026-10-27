@@ -6,7 +6,13 @@ import type { CustomerSummary } from '@/app/api/admin/customers/route';
 
 interface Order {
   id: string;
-  items: { name: string; qty?: number; quantity?: number; price: number }[];
+  items: {
+    name?: string;
+    qty?: number;
+    quantity?: number;
+    price?: number;
+    product?: { name?: string; price?: number };
+  }[];
   total: number;
   status: string;
   createdAt: string;
@@ -138,12 +144,18 @@ function CustomerRow({ customer }: { customer: CustomerSummary }) {
                     </div>
                     <p className="mt-1 text-[11px] text-white/40">{dateStr(order.createdAt)}</p>
                     <ul className="mt-2 space-y-0.5">
-                      {order.items.map((item, i) => (
-                        <li key={i} className="flex justify-between text-[11px] text-white/55">
-                          <span className="truncate">{item.name}{(item.qty ?? item.quantity ?? 1) > 1 ? ` ×${item.qty ?? item.quantity}` : ''}</span>
-                          <span className="ml-2 shrink-0 font-semibold">{fmt(item.price)}</span>
-                        </li>
-                      ))}
+                      {order.items.map((item, i) => {
+                        const quantity = item.qty ?? item.quantity ?? 1;
+                        const name = item.name ?? item.product?.name ?? 'Product';
+                        const price = item.price ?? item.product?.price ?? 0;
+
+                        return (
+                          <li key={i} className="flex justify-between text-[11px] text-white/55">
+                            <span className="truncate">{name}{quantity > 1 ? ` ×${quantity}` : ''}</span>
+                            <span className="ml-2 shrink-0 font-semibold">{fmt(price * quantity)}</span>
+                          </li>
+                        );
+                      })}
                     </ul>
                     <div className="mt-2 border-t border-white/10 pt-2 text-right text-xs font-black text-white">
                       Total: {fmt(order.total)}
